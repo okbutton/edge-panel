@@ -1,0 +1,94 @@
+{
+  "name": "Obsidian",
+  "icon": "\uf02d",
+  "match": {
+    "app": "obsidian"
+  },
+  "pages": [
+    {
+      "name": "Notes",
+      "actions": [
+        {
+          "icon": "\uf120",
+          "label": "Command palette",
+          "keys": "ctrl+p"
+        },
+        {
+          "icon": "\uf15b",
+          "label": "Quick switcher",
+          "keys": "ctrl+o"
+        },
+        {
+          "icon": "\uf067",
+          "label": "New note",
+          "keys": "ctrl+n"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Search",
+          "keys": "ctrl+shift+f"
+        },
+        {
+          "icon": "\uf06e",
+          "label": "Edit / Read",
+          "keys": "ctrl+e"
+        },
+        {
+          "icon": "\uf0e8",
+          "label": "Graph",
+          "keys": "ctrl+g"
+        },
+        {
+          "icon": "\uf060",
+          "label": "Back",
+          "keys": "ctrl+alt+Left"
+        },
+        {
+          "icon": "\uf061",
+          "label": "Forward",
+          "keys": "ctrl+alt+Right"
+        },
+        {
+          "icon": "\uf013",
+          "label": "Settings",
+          "keys": "ctrl+comma"
+        }
+      ]
+    },
+    {
+      "name": "Format",
+      "actions": [
+        {
+          "icon": "\uf032",
+          "label": "Bold",
+          "keys": "ctrl+b"
+        },
+        {
+          "icon": "\uf033",
+          "label": "Italic",
+          "keys": "ctrl+i"
+        },
+        {
+          "icon": "\uf0c1",
+          "label": "Link",
+          "keys": "ctrl+k"
+        },
+        {
+          "icon": "\uf046",
+          "label": "Checkbox",
+          "keys": "ctrl+l"
+        },
+        {
+          "icon": "\uf0e2",
+          "label": "Undo",
+          "keys": "ctrl+z"
+        },
+        {
+          "icon": "\uf01e",
+          "label": "Redo",
+          "keys": "ctrl+shift+z"
+        }
+      ]
+    }
+  ]
+}

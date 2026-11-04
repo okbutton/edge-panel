@@ -16,6 +16,8 @@ Pull down from the header for workspaces and media. Swipe sideways to change pag
 | Key | Default | Does |
 |---|---|---|
 | `aboveFullscreen` | `false` | `true` keeps the panel above fullscreen windows, including the screensaver |
+| `buttonColumns` | `6` | columns of buttons on fixed pages; live pages such as herdr's fill the page |
+| `buttonRows` | `3` | rows of buttons on fixed pages; a page shows at most columns x rows buttons |
 | `screen` | `""` | a monitor name such as `DP-1`; empty finds the Edge. `EDGE_SCREEN` overrides it |
 
 Until the Edge arrives this runs along the bottom of a normal monitor at the same pixel

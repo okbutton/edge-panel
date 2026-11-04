@@ -1,40 +1,40 @@
 {
   "name": "Chrome",
-  "icon": "\uf268",
+  "icon": "",
   "match": {
-    "app": "chrome"
+    "app": "^(google-chrome|chromium)$"
   },
   "pages": [
     {
       "name": "Browse",
       "actions": [
         {
-          "icon": "\uf060",
+          "icon": "",
           "label": "Back",
           "keys": "alt+Left"
         },
         {
-          "icon": "\uf061",
+          "icon": "",
           "label": "Forward",
           "keys": "alt+Right"
         },
         {
-          "icon": "\uf021",
+          "icon": "",
           "label": "Reload",
           "keys": "ctrl+r"
         },
         {
-          "icon": "\uf0ac",
+          "icon": "",
           "label": "Address bar",
           "keys": "ctrl+l"
         },
         {
-          "icon": "\uf002",
+          "icon": "",
           "label": "Find",
           "keys": "ctrl+f"
         },
         {
-          "icon": "\uf02e",
+          "icon": "",
           "label": "Bookmark",
           "keys": "ctrl+d"
         }
@@ -44,27 +44,27 @@
       "name": "Tabs",
       "actions": [
         {
-          "icon": "\uf053",
+          "icon": "",
           "label": "Previous tab",
           "keys": "ctrl+shift+Tab"
         },
         {
-          "icon": "\uf054",
+          "icon": "",
           "label": "Next tab",
           "keys": "ctrl+Tab"
         },
         {
-          "icon": "\uf067",
+          "icon": "",
           "label": "New tab",
           "keys": "ctrl+t"
         },
         {
-          "icon": "\uf0e2",
+          "icon": "",
           "label": "Reopen tab",
           "keys": "ctrl+shift+t"
         },
         {
-          "icon": "\uf00d",
+          "icon": "",
           "label": "Close tab",
           "keys": "ctrl+w",
           "danger": true

@@ -8,11 +8,15 @@ Item {
 
   required property var page
   required property bool showing
+  // Fixed pages use a grid of this size, so buttons keep one size whatever their number.
+  // Live pages share the whole page between their buttons, as they're few and carry detail.
+  property int gridColumns: 6
+  property int gridRows: 3
 
   property var liveActions: []
   readonly property var actions: page.live ? liveActions : (page.actions || [])
-  readonly property int rows: actions.length <= 5 ? 1 : 2
-  readonly property int columns: Math.max(1, Math.ceil(actions.length / rows))
+  readonly property int rows: page.live ? (actions.length <= 5 ? 1 : 2) : gridRows
+  readonly property int columns: page.live ? Math.max(1, Math.ceil(actions.length / rows)) : gridColumns
 
   Process {
     id: live

@@ -8,6 +8,9 @@ Rectangle {
   required property var action
   property bool armed: false
 
+  // After any second tap; the plugin's own keys, run or hypr have been sent by then.
+  signal triggered()
+
   readonly property color statusColor: action.status === "working" ? Theme.accent
     : action.status === "blocked" ? Theme.danger
     : action.status === "done" ? Theme.text
@@ -22,6 +25,7 @@ Rectangle {
     armed = false
     const command = Plugins.command(action)
     if (command) Quickshell.execDetached(command)
+    triggered()
   }
 
   radius: Theme.radius

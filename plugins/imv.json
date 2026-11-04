@@ -1,0 +1,66 @@
+{
+  "name": "Image Viewer",
+  "icon": "\uf03e",
+  "match": {
+    "app": "^imv$"
+  },
+  "pages": [
+    {
+      "name": "View",
+      "actions": [
+        {
+          "icon": "\uf053",
+          "label": "Previous",
+          "keys": "Left"
+        },
+        {
+          "icon": "\uf054",
+          "label": "Next",
+          "keys": "Right"
+        },
+        {
+          "icon": "\uf00e",
+          "label": "Zoom in",
+          "keys": "i"
+        },
+        {
+          "icon": "\uf010",
+          "label": "Zoom out",
+          "keys": "o"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Actual size",
+          "keys": "a"
+        },
+        {
+          "icon": "\uf066",
+          "label": "Fit",
+          "keys": "r"
+        },
+        {
+          "icon": "\uf065",
+          "label": "Fullscreen",
+          "keys": "f"
+        },
+        {
+          "icon": "\uf01e",
+          "label": "Rotate",
+          "keys": "ctrl+r"
+        },
+        {
+          "icon": "\uf05a",
+          "label": "Info overlay",
+          "keys": "d"
+        },
+        {
+          "icon": "\uf00d",
+          "label": "Quit",
+          "keys": "q",
+          "danger": true,
+          "confirm": true
+        }
+      ]
+    }
+  ]
+}

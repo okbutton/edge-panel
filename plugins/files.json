@@ -1,0 +1,106 @@
+{
+  "name": "Files",
+  "icon": "\uf07b",
+  "match": {
+    "app": "^org\\.gnome\\.Nautilus$"
+  },
+  "pages": [
+    {
+      "name": "Browse",
+      "actions": [
+        {
+          "icon": "\uf060",
+          "label": "Back",
+          "keys": "alt+Left"
+        },
+        {
+          "icon": "\uf061",
+          "label": "Forward",
+          "keys": "alt+Right"
+        },
+        {
+          "icon": "\uf148",
+          "label": "Up",
+          "keys": "alt+Up"
+        },
+        {
+          "icon": "\uf015",
+          "label": "Home",
+          "keys": "alt+Home"
+        },
+        {
+          "icon": "\uf0c1",
+          "label": "Location",
+          "keys": "ctrl+l"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Search",
+          "keys": "ctrl+f"
+        },
+        {
+          "icon": "\uf070",
+          "label": "Hidden files",
+          "keys": "ctrl+h"
+        },
+        {
+          "icon": "\uf067",
+          "label": "New tab",
+          "keys": "ctrl+t"
+        },
+        {
+          "icon": "\uf00a",
+          "label": "List / Grid",
+          "keys": "ctrl+1"
+        }
+      ]
+    },
+    {
+      "name": "Edit",
+      "actions": [
+        {
+          "icon": "\uf0c4",
+          "label": "Cut",
+          "keys": "ctrl+x"
+        },
+        {
+          "icon": "\uf0c5",
+          "label": "Copy",
+          "keys": "ctrl+c"
+        },
+        {
+          "icon": "\uf0ea",
+          "label": "Paste",
+          "keys": "ctrl+v"
+        },
+        {
+          "icon": "\uf07c",
+          "label": "New folder",
+          "keys": "ctrl+shift+n"
+        },
+        {
+          "icon": "\uf040",
+          "label": "Rename",
+          "keys": "F2"
+        },
+        {
+          "icon": "\uf05a",
+          "label": "Properties",
+          "keys": "ctrl+i"
+        },
+        {
+          "icon": "\uf0e2",
+          "label": "Undo",
+          "keys": "ctrl+z"
+        },
+        {
+          "icon": "\uf1f8",
+          "label": "Move to trash",
+          "keys": "Delete",
+          "danger": true,
+          "confirm": true
+        }
+      ]
+    }
+  ]
+}

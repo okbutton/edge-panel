@@ -58,7 +58,7 @@ Rectangle {
           required property var modelData
 
           width: (transport.width - 2 * Theme.gap) / 3
-          height: 190
+          height: 130
           radius: Theme.radius
           color: tap.pressed ? Theme.surfacePressed : Theme.background
           opacity: root.player ? 1 : 0.4
@@ -68,7 +68,7 @@ Rectangle {
             text: parent.modelData.icon
             color: Theme.accent
             font.family: Theme.font
-            font.pixelSize: Theme.iconSize
+            font.pixelSize: 60
           }
 
           MouseArea {
@@ -83,7 +83,7 @@ Rectangle {
     // Drag anywhere along the bar to set the volume.
     Item {
       width: parent.width
-      height: 150
+      height: 110
 
       Text {
         id: volumeIcon
@@ -100,7 +100,7 @@ Rectangle {
         anchors.left: volumeIcon.right
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        height: 110
+        height: 84
         radius: Theme.radius
         color: Theme.background
 

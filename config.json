@@ -1,4 +1,6 @@
 {
   "aboveFullscreen": false,
+  "buttonColumns": 6,
+  "buttonRows": 3,
   "screen": ""
 }

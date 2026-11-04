@@ -1,0 +1,146 @@
+{
+  "name": "VS Code",
+  "icon": "\uf121",
+  "match": {
+    "app": "^(code|code-oss|code-url-handler|com\\.microsoft\\.VSCode)$"
+  },
+  "pages": [
+    {
+      "name": "Code",
+      "actions": [
+        {
+          "icon": "\uf120",
+          "label": "Command palette",
+          "keys": "ctrl+shift+p"
+        },
+        {
+          "icon": "\uf15b",
+          "label": "Quick open",
+          "keys": "ctrl+p"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Find in files",
+          "keys": "ctrl+shift+f"
+        },
+        {
+          "icon": "\uf0e8",
+          "label": "Go to symbol",
+          "keys": "ctrl+shift+o"
+        },
+        {
+          "icon": "\uf0c1",
+          "label": "Go to definition",
+          "keys": "F12"
+        },
+        {
+          "icon": "\uf060",
+          "label": "Back",
+          "keys": "ctrl+alt+minus"
+        },
+        {
+          "icon": "\uf040",
+          "label": "Rename",
+          "keys": "F2"
+        },
+        {
+          "icon": "\uf075",
+          "label": "Comment",
+          "keys": "ctrl+slash"
+        },
+        {
+          "icon": "\uf0c7",
+          "label": "Save",
+          "keys": "ctrl+s"
+        }
+      ]
+    },
+    {
+      "name": "Panels",
+      "actions": [
+        {
+          "icon": "\uf0db",
+          "label": "Sidebar",
+          "keys": "ctrl+b"
+        },
+        {
+          "icon": "\uf07c",
+          "label": "Explorer",
+          "keys": "ctrl+shift+e"
+        },
+        {
+          "icon": "\uf126",
+          "label": "Source control",
+          "keys": "ctrl+shift+g"
+        },
+        {
+          "icon": "\uf120",
+          "label": "Terminal",
+          "keys": "ctrl+grave"
+        },
+        {
+          "icon": "\uf071",
+          "label": "Problems",
+          "keys": "ctrl+shift+m"
+        },
+        {
+          "icon": "\uf0ec",
+          "label": "Split editor",
+          "keys": "ctrl+backslash"
+        },
+        {
+          "icon": "\uf0e2",
+          "label": "Reopen editor",
+          "keys": "ctrl+shift+t"
+        },
+        {
+          "icon": "\uf00d",
+          "label": "Close editor",
+          "keys": "ctrl+w",
+          "danger": true
+        }
+      ]
+    },
+    {
+      "name": "Debug",
+      "actions": [
+        {
+          "icon": "\uf04b",
+          "label": "Start / Continue",
+          "keys": "F5"
+        },
+        {
+          "icon": "\uf04d",
+          "label": "Stop",
+          "keys": "shift+F5",
+          "danger": true
+        },
+        {
+          "icon": "\uf021",
+          "label": "Restart",
+          "keys": "ctrl+shift+F5"
+        },
+        {
+          "icon": "\uf051",
+          "label": "Step over",
+          "keys": "F10"
+        },
+        {
+          "icon": "\uf063",
+          "label": "Step into",
+          "keys": "F11"
+        },
+        {
+          "icon": "\uf062",
+          "label": "Step out",
+          "keys": "shift+F11"
+        },
+        {
+          "icon": "\uf111",
+          "label": "Breakpoint",
+          "keys": "F9"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "name": "Netflix",
+  "icon": "\uf008",
+  "match": {
+    "app": "chrome",
+    "title": "Netflix"
+  },
+  "pages": [
+    {
+      "name": "Player",
+      "actions": [
+        {
+          "icon": "\uf04a",
+          "label": "Back 10s",
+          "keys": "Left"
+        },
+        {
+          "icon": "\uf04b",
+          "label": "Play / Pause",
+          "keys": "space"
+        },
+        {
+          "icon": "\uf04e",
+          "label": "Forward 10s",
+          "keys": "Right"
+        },
+        {
+          "icon": "\uf027",
+          "label": "Volume down",
+          "keys": "Down"
+        },
+        {
+          "icon": "\uf028",
+          "label": "Volume up",
+          "keys": "Up"
+        },
+        {
+          "icon": "\uf026",
+          "label": "Mute",
+          "keys": "m"
+        },
+        {
+          "icon": "\uf051",
+          "label": "Skip intro",
+          "keys": "s"
+        },
+        {
+          "icon": "\uf065",
+          "label": "Fullscreen",
+          "keys": "f"
+        },
+        {
+          "icon": "\uf066",
+          "label": "Exit fullscreen",
+          "keys": "Escape"
+        }
+      ]
+    }
+  ]
+}

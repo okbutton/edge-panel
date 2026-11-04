@@ -1,0 +1,85 @@
+{
+  "name": "Discord",
+  "icon": "\uf086",
+  "match": {
+    "app": "discord"
+  },
+  "pages": [
+    {
+      "name": "Voice",
+      "actions": [
+        {
+          "icon": "\uf131",
+          "label": "Mute",
+          "keys": "ctrl+shift+m"
+        },
+        {
+          "icon": "\uf025",
+          "label": "Deafen",
+          "keys": "ctrl+shift+d"
+        },
+        {
+          "icon": "\uf095",
+          "label": "Answer call",
+          "keys": "ctrl+Return"
+        },
+        {
+          "icon": "\uf00d",
+          "label": "Decline call",
+          "keys": "Escape",
+          "danger": true
+        }
+      ]
+    },
+    {
+      "name": "Navigate",
+      "actions": [
+        {
+          "icon": "\uf002",
+          "label": "Quick switcher",
+          "keys": "ctrl+k"
+        },
+        {
+          "icon": "\uf077",
+          "label": "Previous channel",
+          "keys": "alt+Up"
+        },
+        {
+          "icon": "\uf078",
+          "label": "Next channel",
+          "keys": "alt+Down"
+        },
+        {
+          "icon": "\uf062",
+          "label": "Previous unread",
+          "keys": "alt+shift+Up"
+        },
+        {
+          "icon": "\uf063",
+          "label": "Next unread",
+          "keys": "alt+shift+Down"
+        },
+        {
+          "icon": "\uf00c",
+          "label": "Mark read",
+          "keys": "Escape"
+        },
+        {
+          "icon": "\uf01c",
+          "label": "Inbox",
+          "keys": "ctrl+i"
+        },
+        {
+          "icon": "\uf118",
+          "label": "Emoji",
+          "keys": "ctrl+e"
+        },
+        {
+          "icon": "\uf093",
+          "label": "Upload",
+          "keys": "ctrl+shift+u"
+        }
+      ]
+    }
+  ]
+}

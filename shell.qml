@@ -51,11 +51,18 @@ PanelWindow {
       id: config
 
       property bool aboveFullscreen: false
+      property int buttonColumns: 6
+      property int buttonRows: 3
       property string screen: ""
     }
   }
 
   PluginLoader { id: loader }
+
+  EdgeWindows {
+    id: edgeWindows
+    screen: win.screen
+  }
 
   // Find what's running inside the focused window, as with herdr inside foot.
   Process {
@@ -86,6 +93,7 @@ PanelWindow {
     function send(chord: string): void { Quickshell.execDetached(Plugins.wtypeArgs(chord)) }
     function pull(open: bool): void { pullDown.open = open }
     function swipe(index: int): void { pager.positionViewAtIndex(index, ListView.Beginning) }
+    function menu(): void { edgeWindows.openMenu() }
   }
 
   Item {
@@ -226,6 +234,8 @@ PanelWindow {
 
         page: modelData
         showing: index === pager.currentIndex
+        gridColumns: Math.max(1, config.buttonColumns)
+        gridRows: Math.max(1, config.buttonRows)
         width: pager.width
         height: pager.height
       }
@@ -233,6 +243,7 @@ PanelWindow {
 
     PullDown {
       id: pullDown
+      windows: edgeWindows
       width: parent.width
       height: parent.height
     }

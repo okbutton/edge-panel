@@ -83,13 +83,17 @@ function windowProcesses(output) {
   return found
 }
 
-// "ctrl+shift+t" -> ["wtype", "-M", "ctrl", "-M", "shift", "-k", "t", "-m", "shift", "-m", "ctrl"]
+// "ctrl+t"       -> ["wtype", "-M", "ctrl", "-k", "t", "-m", "ctrl"]
+// "ctrl+shift+t" -> ["wtype", "-M", "ctrl", "-M", "shift", "T", "-m", "shift", "-m", "ctrl"]
 function wtypeArgs(chord) {
   const parts = chord.split("+")
   const key = parts.pop()
   const args = ["wtype"]
   for (const mod of parts) args.push("-M", mod)
-  args.push("-k", key)
+  // wtype's keymap has no shifted level: "-k" with Shift held still gives a lower-case
+  // letter, but typing the capital as text gives the capital.
+  if (parts.indexOf("shift") >= 0 && /^[a-z]$/.test(key)) args.push(key.toUpperCase())
+  else args.push("-k", key)
   for (const mod of parts.reverse()) args.push("-m", mod)
   return args
 }

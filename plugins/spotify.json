@@ -1,0 +1,64 @@
+{
+  "name": "Spotify",
+  "icon": "\uf1bc",
+  "match": {
+    "app": "^spotify$"
+  },
+  "pages": [
+    {
+      "name": "Player",
+      "actions": [
+        {
+          "icon": "\uf048",
+          "label": "Previous",
+          "keys": "ctrl+Left"
+        },
+        {
+          "icon": "\uf04b",
+          "label": "Play / Pause",
+          "keys": "space"
+        },
+        {
+          "icon": "\uf051",
+          "label": "Next",
+          "keys": "ctrl+Right"
+        },
+        {
+          "icon": "\uf04a",
+          "label": "Seek back",
+          "keys": "shift+Left"
+        },
+        {
+          "icon": "\uf04e",
+          "label": "Seek forward",
+          "keys": "shift+Right"
+        },
+        {
+          "icon": "\uf004",
+          "label": "Like",
+          "keys": "alt+shift+b"
+        },
+        {
+          "icon": "\uf027",
+          "label": "Volume down",
+          "keys": "ctrl+Down"
+        },
+        {
+          "icon": "\uf028",
+          "label": "Volume up",
+          "keys": "ctrl+Up"
+        },
+        {
+          "icon": "\uf074",
+          "label": "Shuffle",
+          "keys": "ctrl+s"
+        },
+        {
+          "icon": "\uf01e",
+          "label": "Repeat",
+          "keys": "ctrl+r"
+        }
+      ]
+    }
+  ]
+}

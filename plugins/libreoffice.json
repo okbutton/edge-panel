@@ -1,0 +1,84 @@
+{
+  "name": "LibreOffice",
+  "icon": "\uf15c",
+  "match": {
+    "app": "^(libreoffice|soffice)"
+  },
+  "pages": [
+    {
+      "name": "Format",
+      "actions": [
+        {
+          "icon": "\uf032",
+          "label": "Bold",
+          "keys": "ctrl+b"
+        },
+        {
+          "icon": "\uf033",
+          "label": "Italic",
+          "keys": "ctrl+i"
+        },
+        {
+          "icon": "\uf0cd",
+          "label": "Underline",
+          "keys": "ctrl+u"
+        },
+        {
+          "icon": "\uf036",
+          "label": "Align left",
+          "keys": "ctrl+l"
+        },
+        {
+          "icon": "\uf037",
+          "label": "Centre",
+          "keys": "ctrl+e"
+        },
+        {
+          "icon": "\uf038",
+          "label": "Align right",
+          "keys": "ctrl+r"
+        },
+        {
+          "icon": "\uf0ca",
+          "label": "Bullets",
+          "keys": "shift+F12"
+        },
+        {
+          "icon": "\uf0cb",
+          "label": "Numbering",
+          "keys": "F12"
+        }
+      ]
+    },
+    {
+      "name": "Edit",
+      "actions": [
+        {
+          "icon": "\uf0e2",
+          "label": "Undo",
+          "keys": "ctrl+z"
+        },
+        {
+          "icon": "\uf01e",
+          "label": "Redo",
+          "keys": "ctrl+y"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Find & replace",
+          "keys": "ctrl+h"
+        },
+        {
+          "icon": "\uf0c7",
+          "label": "Save",
+          "keys": "ctrl+s"
+        },
+        {
+          "icon": "\uf02f",
+          "label": "Print",
+          "keys": "ctrl+p"
+        }
+      ]
+    }
+  ]
+}

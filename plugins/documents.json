@@ -1,0 +1,64 @@
+{
+  "name": "Documents",
+  "icon": "\uf1c1",
+  "match": {
+    "app": "^org\\.gnome\\.(Papers|Evince)$"
+  },
+  "pages": [
+    {
+      "name": "Read",
+      "actions": [
+        {
+          "icon": "\uf053",
+          "label": "Previous page",
+          "keys": "p"
+        },
+        {
+          "icon": "\uf054",
+          "label": "Next page",
+          "keys": "n"
+        },
+        {
+          "icon": "\uf049",
+          "label": "First page",
+          "keys": "ctrl+Home"
+        },
+        {
+          "icon": "\uf050",
+          "label": "Last page",
+          "keys": "ctrl+End"
+        },
+        {
+          "icon": "\uf00e",
+          "label": "Zoom in",
+          "keys": "ctrl+plus"
+        },
+        {
+          "icon": "\uf010",
+          "label": "Zoom out",
+          "keys": "ctrl+minus"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Find",
+          "keys": "ctrl+f"
+        },
+        {
+          "icon": "\uf0db",
+          "label": "Sidebar",
+          "keys": "F9"
+        },
+        {
+          "icon": "\uf065",
+          "label": "Fullscreen",
+          "keys": "F11"
+        },
+        {
+          "icon": "\uf26c",
+          "label": "Presentation",
+          "keys": "F5"
+        }
+      ]
+    }
+  ]
+}

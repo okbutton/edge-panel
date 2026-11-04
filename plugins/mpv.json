@@ -1,0 +1,116 @@
+{
+  "name": "mpv",
+  "icon": "\uf008",
+  "match": {
+    "app": "^mpv$"
+  },
+  "pages": [
+    {
+      "name": "Playback",
+      "actions": [
+        {
+          "icon": "\uf04a",
+          "label": "Back 5s",
+          "keys": "Left"
+        },
+        {
+          "icon": "\uf04b",
+          "label": "Play / Pause",
+          "keys": "space"
+        },
+        {
+          "icon": "\uf04e",
+          "label": "Forward 5s",
+          "keys": "Right"
+        },
+        {
+          "icon": "\uf049",
+          "label": "Back 1 min",
+          "keys": "Down"
+        },
+        {
+          "icon": "\uf050",
+          "label": "Forward 1 min",
+          "keys": "Up"
+        },
+        {
+          "icon": "\uf048",
+          "label": "Previous file",
+          "keys": "less"
+        },
+        {
+          "icon": "\uf051",
+          "label": "Next file",
+          "keys": "greater"
+        },
+        {
+          "icon": "\uf026",
+          "label": "Mute",
+          "keys": "m"
+        },
+        {
+          "icon": "\uf065",
+          "label": "Fullscreen",
+          "keys": "f"
+        }
+      ]
+    },
+    {
+      "name": "Tracks",
+      "actions": [
+        {
+          "icon": "\uf20a",
+          "label": "Subtitles on/off",
+          "keys": "v"
+        },
+        {
+          "icon": "\uf0c9",
+          "label": "Subtitle track",
+          "keys": "j"
+        },
+        {
+          "icon": "\uf025",
+          "label": "Audio track",
+          "keys": "numbersign"
+        },
+        {
+          "icon": "\uf027",
+          "label": "Volume down",
+          "keys": "9"
+        },
+        {
+          "icon": "\uf028",
+          "label": "Volume up",
+          "keys": "0"
+        },
+        {
+          "icon": "\uf068",
+          "label": "Slower",
+          "keys": "bracketleft"
+        },
+        {
+          "icon": "\uf067",
+          "label": "Faster",
+          "keys": "bracketright"
+        },
+        {
+          "icon": "\uf0e4",
+          "label": "Normal speed",
+          "keys": "BackSpace"
+        },
+        {
+          "icon": "\uf030",
+          "label": "Screenshot",
+          "keys": "s"
+        },
+        {
+          "icon": "\uf00d",
+          "label": "Quit",
+          "keys": "q",
+          "danger": true,
+          "confirm": true
+        }
+      ]
+    }
+  ]
+}
