@@ -1,0 +1,13 @@
+# Lets nethogs watch network traffic without root, so the Edge panel can show network
+# use per program. Reapplied whenever pacman installs or upgrades nethogs, as replacing
+# the file drops its capabilities. Copy to /etc/pacman.d/hooks/.
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = nethogs
+
+[Action]
+Description = Letting nethogs watch network traffic without root
+When = PostTransaction
+Exec = /usr/bin/setcap cap_net_admin,cap_net_raw+ep /usr/bin/nethogs

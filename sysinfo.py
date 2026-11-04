@@ -10,8 +10,10 @@ import json
 import os
 import shutil
 import socket
+import re
 import subprocess
 import sys
+import threading
 import time
 
 
@@ -201,16 +203,120 @@ def top_processes(now, before, elapsed, count=12):
     return busiest[:count]
 
 
+def group_network(rows, count=12):
+    """Adds up (name, received, sent) rows by name, busiest first."""
+    programs = {}
+    for name, down, up in rows:
+        program = programs.setdefault(name, {"name": name, "count": 0, "down": 0, "up": 0})
+        program["count"] += 1
+        program["down"] += down
+        program["up"] += up
+    busiest = [program for program in programs.values() if program["down"] + program["up"] > 0]
+    busiest.sort(key=lambda program: program["down"] + program["up"], reverse=True)
+    return busiest[:count]
+
+
+class Nethogs:
+    """Network use per process from nethogs, which sees all traffic, UDP included. It
+    needs permission to watch traffic: run as root, or given capabilities with setcap.
+    Without that it exits at once, and alive is False."""
+
+    def __init__(self, interface, interval):
+        self.rows = []
+        self.process = None
+        if not shutil.which("nethogs") or not interface:
+            return
+        try:
+            self.process = subprocess.Popen(
+                ["nethogs", "-t", "-C", "-d", str(max(1, round(interval))), interface],
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+        except OSError:
+            return
+        threading.Thread(target=self.read, daemon=True).start()
+
+    @property
+    def alive(self):
+        return self.process is not None and self.process.poll() is None
+
+    def read(self):
+        block = None
+        for line in self.process.stdout:
+            line = line.rstrip("\n")
+            if line.startswith("Refreshing:"):
+                if block is not None:
+                    self.rows = block
+                block = []
+            elif block is not None and "\t" in line:
+                # program/pid/uid, then KB/s sent and received
+                label, sent, received = line.rsplit("\t", 2)
+                program = label.rsplit("/", 2)[0]
+                if program.startswith("unknown"):
+                    continue
+                name = os.path.basename(program.split(" ")[0])
+                try:
+                    block.append((name, float(received) * 1024, float(sent) * 1024))
+                except ValueError:
+                    pass
+
+    def top(self):
+        return group_network(self.rows)
+
+    def stop(self):
+        if self.alive:
+            self.process.terminate()
+
+
+SOCKET_USER = re.compile(r'users:\(\("([^"]+)",pid=(\d+)')
+LOOPBACK = ("127.", "[::1]", "[::ffff:127.")
+
+
+def tcp_bytes():
+    """Bytes received and sent by each TCP connection to another machine, from ss. Only
+    this user's processes are named, and UDP (so QUIC) isn't counted."""
+    found = {}
+    try:
+        output = subprocess.run(["ss", "-tinpH", "state", "established"],
+                                capture_output=True, text=True, timeout=5).stdout
+    except (OSError, subprocess.SubprocessError):
+        return found
+    current = None
+    for line in output.splitlines():
+        if not line.startswith(("\t", " ")):
+            fields = line.split()
+            user = SOCKET_USER.search(line)
+            if len(fields) < 4 or not user or fields[3].startswith(LOOPBACK):
+                current = None
+                continue
+            current = (fields[2], fields[3], user.group(1), user.group(2))
+        elif current:
+            received = re.search(r"bytes_received:(\d+)", line)
+            sent = re.search(r"bytes_acked:(\d+)", line)
+            found[current] = (int(received.group(1)) if received else 0, int(sent.group(1)) if sent else 0)
+            current = None
+    return found
+
+
+def tcp_top(now, before, elapsed):
+    rows = []
+    for key, (received, sent) in now.items():
+        old = before.get(key)
+        if old:
+            rows.append((key[2], max(0, received - old[0]) / elapsed, max(0, sent - old[1]) / elapsed))
+    return group_network(rows)
+
+
 def main():
     interval = float(sys.argv[1]) if len(sys.argv) > 1 else 2
     model = cpu_model()
     host = socket.gethostname()
     previous = None
+    nethogs = Nethogs(default_interface(), interval)
     while True:
         now = time.monotonic()
         interface = default_interface()
         sample = {"cpu": cpu_times(), "net": network_bytes(interface), "disk": disk_bytes(),
-                  "processes": process_times(), "time": now}
+                  "processes": process_times(), "time": now,
+                  "tcp": {} if nethogs.alive else tcp_bytes()}
         if previous:
             elapsed = now - previous["time"]
             usage = [100 * (busy - old_busy) / max(1, total - old_total)
@@ -228,6 +334,9 @@ def main():
                             "up": max(0, sample["net"][1] - previous["net"][1]) / elapsed},
                 "disks": disks(),
                 "processes": top_processes(sample["processes"], previous["processes"], elapsed),
+                "networkSource": "nethogs" if nethogs.alive else "ss",
+                "networkProcesses": nethogs.top() if nethogs.alive
+                else tcp_top(sample["tcp"], previous.get("tcp") or {}, elapsed),
                 "io": {"read": max(0, sample["disk"][0] - previous["disk"][0]) / elapsed,
                        "write": max(0, sample["disk"][1] - previous["disk"][1]) / elapsed},
             }), flush=True)

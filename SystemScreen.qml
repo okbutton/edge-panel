@@ -63,7 +63,7 @@ SideScreen {
   title: "System"
   icon: "\u{F061A}"
 
-  readonly property var pageNames: ["Overview", "Processes"]
+  readonly property var pageNames: ["Overview", "Processes", "Network"]
 
   tabs: Row {
     anchors.verticalCenter: parent.verticalCenter
@@ -96,7 +96,10 @@ SideScreen {
       width: parent.width - x
       leftPadding: 20
       elide: Text.ElideRight
-      text: root.info ? `${root.info.host}  ·  ${root.cpu.model}  ·  up ${root.duration(root.info.uptime)}` : ""
+      // On the Network page, say when only TCP is counted.
+      text: pager.currentIndex === 2 && root.info && root.info.networkSource === "ss"
+        ? "TCP only: set up nethogs to count everything"
+        : root.info ? `${root.info.host}  ·  ${root.cpu.model}  ·  up ${root.duration(root.info.uptime)}` : ""
       color: Theme.textDim
       font.family: Theme.font
       font.pixelSize: 30
@@ -464,6 +467,80 @@ SideScreen {
           font.bold: true
         }
       }
+    }
+  }
+  // The programs using the network most since the last reading.
+  Item {
+    width: pager.width
+    height: pager.height
+
+    readonly property var programs: root.info ? root.info.networkProcesses || [] : []
+    readonly property real busiest: programs.reduce((most, program) => Math.max(most, program.down + program.up), 1)
+
+    Grid {
+      id: networkPrograms
+      anchors.fill: parent
+      flow: Grid.TopToBottom
+      rows: 6
+      columns: 2
+      spacing: Theme.gap
+
+      Repeater {
+        model: parent.parent.programs
+
+        Rectangle {
+          required property var modelData
+
+          width: (networkPrograms.width - networkPrograms.spacing) / 2
+          height: (networkPrograms.height - 5 * networkPrograms.spacing) / 6
+          radius: Theme.radius
+          color: Theme.surface
+          border.color: Theme.line
+          border.width: 2
+          clip: true
+
+          // As a share of the busiest program.
+          Rectangle {
+            width: parent.width * (parent.modelData.down + parent.modelData.up) / networkPrograms.parent.busiest
+            height: parent.height
+            radius: Theme.radius
+            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
+          }
+
+          Text {
+            x: 28
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width - x - rates.width - 40
+            elide: Text.ElideRight
+            text: parent.modelData.name
+            color: Theme.text
+            font.family: Theme.font
+            font.pixelSize: 34
+            font.bold: true
+          }
+
+          Text {
+            id: rates
+            anchors.right: parent.right
+            anchors.rightMargin: 28
+            anchors.verticalCenter: parent.verticalCenter
+            text: `\u{F0045} ${root.rate(parent.modelData.down)}   \u{F005D} ${root.rate(parent.modelData.up)}`
+            color: Theme.text
+            font.family: Theme.font
+            font.pixelSize: 32
+            font.bold: true
+          }
+        }
+      }
+    }
+
+    Text {
+      anchors.centerIn: parent
+      visible: parent.programs.length === 0
+      text: "No network traffic"
+      color: Theme.textDim
+      font.family: Theme.font
+      font.pixelSize: Theme.labelSize
     }
   }
     }

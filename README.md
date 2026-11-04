@@ -36,6 +36,7 @@ plugin, picked up automatically.
 - Hyprland 0.56 or later, with its Lua configuration
 - Quickshell 0.3 or later
 - `wtype`, `jq` and `wpctl` (PipeWire)
+- Optionally, `nethogs`, for every program's network use (see the System section)
 - Python 3, for the Home Assistant screen
 - JetBrainsMono Nerd Font, for the icons
 - [Omarchy](https://omarchy.org), for the menu and the system controls. The rest of the
@@ -194,9 +195,34 @@ Tap the chip in the header for a screen about this computer:
 CPU, memory, GPU and network each have a graph of the last two minutes. Swipe across,
 or tap **Processes**, for the twelve busiest programs, with each one's memory and process
 ID. Processes with the same name, such as Chrome's many, add up to one row, which shows how
-many there are. As in `top`, 100% is one whole core. The readings
+many there are. As in `top`, 100% is one whole core. One more swipe gives **Network**: the
+programs downloading and uploading the most, grouped the same way. The readings
 come from `sysinfo.py`, which reads `/proc` and `/sys` every two seconds, and runs only
 while the screen is showing.
+
+### Network use by program
+
+Linux doesn't keep count of network use per program, so the Network page measures it one
+of two ways:
+
+- **[nethogs](https://github.com/raboof/nethogs)**, if it's installed and allowed to watch
+  traffic. It counts everything, including the UDP that QUIC (much of Chrome's traffic)
+  and voice calls use.
+- **`ss`** otherwise. It needs nothing installed, but counts only TCP, and only for your
+  own programs. The page says when this is the case.
+
+To set up nethogs on Arch, install it, let it watch traffic without root, and install the
+pacman hook that does that again after each upgrade:
+
+```sh
+sudo pacman -S nethogs
+sudo setcap cap_net_admin,cap_net_raw+ep /usr/bin/nethogs
+sudo install -Dm644 extras/nethogs-setcap.hook /etc/pacman.d/hooks/nethogs-setcap.hook
+```
+
+The `setcap` step lets anyone who can log in to this computer see which programs use the
+network, and how much. That's fine on a computer only you use; think twice on a shared
+one.
 
 ## Included plugins
 
