@@ -19,6 +19,9 @@ plugin, picked up automatically.
   - **System controls:** the Omarchy menu, stay awake, night light, do not disturb, mic
     mute, audio output, screenshot and lock.
   - **Media:** now playing, previous, play/pause, next, and a volume bar you drag.
+- **Home Assistant screen.** Drag in from the right edge, or tap the house, for your
+  smart home: lights, switches, scenes, thermostats, media players and more, one page per
+  room.
 - **The Omarchy menu on the Edge.** Opens the menu on the panel itself, where it works by
   touch, then returns focus to your window when it closes.
 - **Nothing hides behind the panel.** A window that opens on the Edge is moved to the
@@ -108,6 +111,51 @@ EDGE_SCREEN=DP-1 qs -p ~/edge-panel
 There, the panel runs along the bottom of that monitor at the Edge's pixel size. It looks
 larger than on the Edge, because the Edge has a higher pixel density (about 184 pixels
 per inch, against 109 for a 27" 1440p monitor).
+
+## Home Assistant
+
+The home screen slides in from the right. Drag in from the right edge of the panel, or
+tap the house in the header. To go back, drag from its left edge or tap the arrow. Its
+pages swipe sideways, and the tabs in its header jump straight to a page.
+
+To connect it, create a long-lived access token in Home Assistant (your profile,
+**Security**, **Long-lived access tokens**). Then copy `home.example.json` to `home.json`
+and fill it in:
+
+```json
+{
+  "url": "http://homeassistant.local:8123",
+  "token": "eyJ...",
+  "pages": []
+}
+```
+
+`home.json` is ignored by git, so the token stays on your machine. Changes apply as soon
+as it's saved.
+
+With `pages` empty, there is one page for each of your Home Assistant areas, holding its
+lights, switches, fans, covers, scenes, scripts, thermostats, media players, locks and
+buttons. To choose for yourself, list the pages:
+
+```json
+"pages": [
+  { "name": "Living room", "entities": ["light.lamp", "climate.thermostat", "media_player.tv"] },
+  { "name": "Scenes", "entities": ["scene.movie_night", "scene.bedtime"] }
+]
+```
+
+Tapping a button does the obvious thing for its kind:
+
+| Kind | Tap |
+|---|---|
+| Light, switch, fan, cover, input boolean | Toggles it. Lights show their brightness |
+| Scene, script | Runs it |
+| Media player | Play/pause, or turns it on |
+| Thermostat | Shows the current and target temperatures, with − and + buttons beside it |
+| Lock, button | Locks, unlocks or presses it, after a second tap |
+
+A page that holds more buttons than the grid splits into several pages. States refresh
+every two seconds while the home screen is showing, and not at all otherwise.
 
 ## Included plugins
 

@@ -59,6 +59,8 @@ PanelWindow {
 
   PluginLoader { id: loader }
 
+  HomeAssistant { id: home }
+
   EdgeWindows {
     id: edgeWindows
     screen: win.screen
@@ -94,6 +96,7 @@ PanelWindow {
     function pull(open: bool): void { pullDown.open = open }
     function swipe(index: int): void { pager.positionViewAtIndex(index, ListView.Beginning) }
     function menu(): void { edgeWindows.openMenu() }
+    function home(open: bool): void { homeScreen.open = open }
   }
 
   Item {
@@ -175,7 +178,7 @@ PanelWindow {
 
       Row {
         id: dots
-        anchors.right: closeMock.left
+        anchors.right: homeButton.left
         anchors.rightMargin: 40
         anchors.verticalCenter: parent.verticalCenter
         spacing: 14
@@ -191,6 +194,24 @@ PanelWindow {
             radius: 11
             color: index === pager.currentIndex ? Theme.accent : Theme.line
           }
+        }
+      }
+
+      // Opens the Home Assistant screen, as does dragging in from the right edge.
+      Text {
+        id: homeButton
+        anchors.right: closeMock.left
+        anchors.rightMargin: 44
+        anchors.verticalCenter: parent.verticalCenter
+        text: "\u{F02DC}"
+        color: Theme.textDim
+        font.family: Theme.font
+        font.pixelSize: 48
+
+        MouseArea {
+          anchors.fill: parent
+          anchors.margins: -20
+          onClicked: homeScreen.open = true
         }
       }
 
@@ -239,6 +260,26 @@ PanelWindow {
         width: pager.width
         height: pager.height
       }
+    }
+
+    // Drag in from the right edge for the Home Assistant screen.
+    MouseArea {
+      x: parent.width - width
+      y: header.height
+      width: 48
+      height: parent.height - y
+      preventStealing: true
+      onPositionChanged: mouse => homeScreen.follow(mapToItem(stage, mouse.x, mouse.y).x)
+      onReleased: homeScreen.release()
+    }
+
+    HomeScreen {
+      id: homeScreen
+      home: home
+      gridColumns: Math.max(1, config.buttonColumns)
+      gridRows: Math.max(1, config.buttonRows)
+      width: parent.width
+      height: parent.height
     }
 
     PullDown {
