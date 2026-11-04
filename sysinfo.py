@@ -183,15 +183,21 @@ def process_times():
 
 
 def top_processes(now, before, elapsed, count=12):
-    """The busiest processes since the last reading. 100% is one core, as in top."""
-    busiest = []
+    """The busiest programs since the last reading. Processes with the same name, like
+    Chrome's many, add up to one row. 100% is one core, as in top."""
+    programs = {}
     for pid, process in now.items():
         old = before.get(pid)
         if not old or old["name"] != process["name"]:
             continue
         usage = 100 * (process["ticks"] - old["ticks"]) / CLOCK_TICKS / elapsed
-        busiest.append({"pid": pid, "name": process["name"], "cpu": usage, "memory": process["memory"]})
-    busiest.sort(key=lambda process: (process["cpu"], process["memory"]), reverse=True)
+        program = programs.setdefault(process["name"],
+                                      {"name": process["name"], "pid": pid, "count": 0, "cpu": 0, "memory": 0})
+        program["count"] += 1
+        program["cpu"] += usage
+        program["memory"] += process["memory"]
+        program["pid"] = min(program["pid"], pid)
+    busiest = sorted(programs.values(), key=lambda program: (program["cpu"], program["memory"]), reverse=True)
     return busiest[:count]
 
 

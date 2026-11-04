@@ -192,8 +192,9 @@ Tap the chip in the header for a screen about this computer:
 - **Disks:** read and write speeds, and how full each filesystem is
 
 CPU, memory, GPU and network each have a graph of the last two minutes. Swipe across,
-or tap **Processes**, for the twelve busiest processes, with each one's memory and process
-ID. As in `top`, 100% is one whole core. The readings
+or tap **Processes**, for the twelve busiest programs, with each one's memory and process
+ID. Processes with the same name, such as Chrome's many, add up to one row, which shows how
+many there are. As in `top`, 100% is one whole core. The readings
 come from `sysinfo.py`, which reads `/proc` and `/sys` every two seconds, and runs only
 while the screen is showing.
 

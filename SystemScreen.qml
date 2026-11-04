@@ -443,7 +443,8 @@ SideScreen {
           anchors.right: cpuText.left
           anchors.rightMargin: 36
           anchors.verticalCenter: parent.verticalCenter
-          text: `${root.bytes(parent.modelData.memory)}  ·  ${parent.modelData.pid}`
+          // One process shows its ID; several of the same name show how many there are.
+          text: `${root.bytes(parent.modelData.memory)}  ·  ${parent.modelData.count > 1 ? parent.modelData.count + " processes" : parent.modelData.pid}`
           color: Theme.textDim
           font.family: Theme.font
           font.pixelSize: 26
