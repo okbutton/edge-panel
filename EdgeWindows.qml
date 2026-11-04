@@ -50,6 +50,8 @@ Scope {
         // openwindow>>ADDRESS,WORKSPACE,CLASS,TITLE
         const fields = event.data.split(",")
         if (fields[1] !== String(root.monitor.activeWorkspace.name)) return
+        // The screensaver opens one window per monitor, the Edge included, and covers the panel.
+        if (fields[2] === "org.omarchy.screensaver") return
         Quickshell.execDetached(["sh", "-c",
           `hyprctl dispatch 'hl.dsp.focus({ window = "address:0x${fields[0]}" })' && ` +
           `hyprctl dispatch 'hl.dsp.window.move({ workspace = "${root.lastWorkspace}" })'`])
