@@ -1,0 +1,75 @@
+{
+  "name": "Chrome",
+  "icon": "\uf268",
+  "match": {
+    "app": "chrome"
+  },
+  "pages": [
+    {
+      "name": "Browse",
+      "actions": [
+        {
+          "icon": "\uf060",
+          "label": "Back",
+          "keys": "alt+Left"
+        },
+        {
+          "icon": "\uf061",
+          "label": "Forward",
+          "keys": "alt+Right"
+        },
+        {
+          "icon": "\uf021",
+          "label": "Reload",
+          "keys": "ctrl+r"
+        },
+        {
+          "icon": "\uf0ac",
+          "label": "Address bar",
+          "keys": "ctrl+l"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Find",
+          "keys": "ctrl+f"
+        },
+        {
+          "icon": "\uf02e",
+          "label": "Bookmark",
+          "keys": "ctrl+d"
+        }
+      ]
+    },
+    {
+      "name": "Tabs",
+      "actions": [
+        {
+          "icon": "\uf053",
+          "label": "Previous tab",
+          "keys": "ctrl+shift+Tab"
+        },
+        {
+          "icon": "\uf054",
+          "label": "Next tab",
+          "keys": "ctrl+Tab"
+        },
+        {
+          "icon": "\uf067",
+          "label": "New tab",
+          "keys": "ctrl+t"
+        },
+        {
+          "icon": "\uf0e2",
+          "label": "Reopen tab",
+          "keys": "ctrl+shift+t"
+        },
+        {
+          "icon": "\uf00d",
+          "label": "Close tab",
+          "keys": "ctrl+w",
+          "danger": true
+        }
+      ]
+    }
+  ]
+}

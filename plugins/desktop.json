@@ -1,0 +1,41 @@
+{
+  "name": "Desktop",
+  "icon": "\uf108",
+  "pages": [
+    {
+      "name": "Edit",
+      "actions": [
+        {
+          "icon": "\uf0c5",
+          "label": "Copy",
+          "keys": "ctrl+c"
+        },
+        {
+          "icon": "\uf0ea",
+          "label": "Paste",
+          "keys": "ctrl+v"
+        },
+        {
+          "icon": "\uf0e2",
+          "label": "Undo",
+          "keys": "ctrl+z"
+        },
+        {
+          "icon": "\uf01e",
+          "label": "Redo",
+          "keys": "ctrl+shift+z"
+        },
+        {
+          "icon": "\uf0c7",
+          "label": "Save",
+          "keys": "ctrl+s"
+        },
+        {
+          "icon": "\uf002",
+          "label": "Find",
+          "keys": "ctrl+f"
+        }
+      ]
+    }
+  ]
+}

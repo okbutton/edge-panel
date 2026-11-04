@@ -1,0 +1,178 @@
+{
+  "name": "herdr",
+  "icon": "\uf0e8",
+  "match": {
+    "process": "herdr"
+  },
+  "pages": [
+    {
+      "name": "Agents",
+      "live": {
+        "command": [
+          "sh",
+          "-c",
+          "herdr agent list | jq -c '[.result.agents[] | {icon:\"\\udb81\\udea9\", label:(.terminal_title_stripped // .agent), detail:(.agent_status + \" \\u00b7 \" + (.foreground_cwd // .cwd | split(\"/\") | last)), status:.agent_status, active:.focused, run:[\"herdr\",\"agent\",\"focus\",.pane_id]}]'"
+        ],
+        "interval": 2000
+      }
+    },
+    {
+      "name": "Claude Code",
+      "actions": [
+        {
+          "icon": "\uf00c",
+          "label": "Enter",
+          "keys": "Return"
+        },
+        {
+          "icon": "\uf05e",
+          "label": "Escape",
+          "keys": "Escape"
+        },
+        {
+          "icon": "\uf0d8",
+          "label": "Previous",
+          "keys": "Up"
+        },
+        {
+          "icon": "\uf0d7",
+          "label": "Next",
+          "keys": "Down"
+        },
+        {
+          "icon": "\uf362",
+          "label": "Switch mode",
+          "keys": "shift+Tab"
+        },
+        {
+          "icon": "\uf057",
+          "label": "Interrupt",
+          "keys": "ctrl+c",
+          "danger": true
+        }
+      ]
+    },
+    {
+      "name": "Panes",
+      "actions": [
+        {
+          "icon": "\uf053",
+          "label": "Focus left",
+          "run": [
+            "herdr",
+            "pane",
+            "focus",
+            "--current",
+            "--direction",
+            "left"
+          ]
+        },
+        {
+          "icon": "\uf054",
+          "label": "Focus right",
+          "run": [
+            "herdr",
+            "pane",
+            "focus",
+            "--current",
+            "--direction",
+            "right"
+          ]
+        },
+        {
+          "icon": "\uf077",
+          "label": "Focus up",
+          "run": [
+            "herdr",
+            "pane",
+            "focus",
+            "--current",
+            "--direction",
+            "up"
+          ]
+        },
+        {
+          "icon": "\uf078",
+          "label": "Focus down",
+          "run": [
+            "herdr",
+            "pane",
+            "focus",
+            "--current",
+            "--direction",
+            "down"
+          ]
+        },
+        {
+          "icon": "\uf065",
+          "label": "Zoom",
+          "run": [
+            "herdr",
+            "pane",
+            "zoom",
+            "--current",
+            "--toggle"
+          ]
+        },
+        {
+          "icon": "\uf0db",
+          "label": "Split right",
+          "run": [
+            "herdr",
+            "pane",
+            "split",
+            "--current",
+            "--direction",
+            "right",
+            "--focus"
+          ]
+        },
+        {
+          "icon": "\uf0c9",
+          "label": "Split down",
+          "run": [
+            "herdr",
+            "pane",
+            "split",
+            "--current",
+            "--direction",
+            "down",
+            "--focus"
+          ]
+        },
+        {
+          "icon": "\uf067",
+          "label": "New tab",
+          "run": [
+            "herdr",
+            "tab",
+            "create",
+            "--focus"
+          ]
+        },
+        {
+          "icon": "\uf00d",
+          "label": "Close pane",
+          "run": [
+            "sh",
+            "-c",
+            "herdr pane close \"$(herdr pane current --current | jq -r .result.pane.pane_id)\""
+          ],
+          "danger": true,
+          "confirm": true
+        }
+      ]
+    },
+    {
+      "name": "Workspaces",
+      "live": {
+        "command": [
+          "sh",
+          "-c",
+          "herdr workspace list | jq -c '[.result.workspaces[] | {icon:\"\\uf2d2\", label:.label, detail:(.agent_status + \" \\u00b7 \" + (.pane_count|tostring) + \" panes\"), status:.agent_status, active:.focused, run:[\"herdr\",\"workspace\",\"focus\",.workspace_id]}]'"
+        ],
+        "interval": 2000
+      }
+    }
+  ]
+}

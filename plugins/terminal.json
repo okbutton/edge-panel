@@ -1,0 +1,44 @@
+{
+  "name": "Terminal",
+  "icon": "\uf120",
+  "match": {
+    "app": "^(foot|alacritty|kitty|com\\.mitchellh\\.ghostty)$"
+  },
+  "pages": [
+    {
+      "name": "Shell",
+      "actions": [
+        {
+          "icon": "\uf0c5",
+          "label": "Copy",
+          "keys": "ctrl+shift+c"
+        },
+        {
+          "icon": "\uf0ea",
+          "label": "Paste",
+          "keys": "ctrl+shift+v"
+        },
+        {
+          "icon": "\uf102",
+          "label": "Page up",
+          "keys": "shift+Prior"
+        },
+        {
+          "icon": "\uf103",
+          "label": "Page down",
+          "keys": "shift+Next"
+        },
+        {
+          "icon": "\uf12d",
+          "label": "Clear",
+          "keys": "ctrl+l"
+        },
+        {
+          "icon": "\uf002",
+          "label": "History",
+          "keys": "ctrl+r"
+        }
+      ]
+    }
+  ]
+}

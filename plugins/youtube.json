@@ -1,0 +1,91 @@
+{
+  "name": "YouTube",
+  "icon": "\uf16a",
+  "match": {
+    "app": "chrome",
+    "title": "YouTube"
+  },
+  "pages": [
+    {
+      "name": "Player",
+      "actions": [
+        {
+          "icon": "\uf04a",
+          "label": "Back 10s",
+          "keys": "j"
+        },
+        {
+          "icon": "\uf04b",
+          "label": "Play / Pause",
+          "keys": "k"
+        },
+        {
+          "icon": "\uf04e",
+          "label": "Forward 10s",
+          "keys": "l"
+        },
+        {
+          "icon": "\uf026",
+          "label": "Mute",
+          "keys": "m"
+        },
+        {
+          "icon": "\uf065",
+          "label": "Fullscreen",
+          "keys": "f"
+        },
+        {
+          "icon": "\uf20a",
+          "label": "Captions",
+          "keys": "c"
+        },
+        {
+          "icon": "\uf2d1",
+          "label": "Theatre",
+          "keys": "t"
+        },
+        {
+          "icon": "\uf2d2",
+          "label": "Mini player",
+          "keys": "i"
+        },
+        {
+          "icon": "\uf051",
+          "label": "Next video",
+          "keys": "shift+n"
+        }
+      ]
+    },
+    {
+      "name": "Browser",
+      "actions": [
+        {
+          "icon": "\uf060",
+          "label": "Back",
+          "keys": "alt+Left"
+        },
+        {
+          "icon": "\uf061",
+          "label": "Forward",
+          "keys": "alt+Right"
+        },
+        {
+          "icon": "\uf021",
+          "label": "Reload",
+          "keys": "ctrl+r"
+        },
+        {
+          "icon": "\uf067",
+          "label": "New tab",
+          "keys": "ctrl+t"
+        },
+        {
+          "icon": "\uf00d",
+          "label": "Close tab",
+          "keys": "ctrl+w",
+          "danger": true
+        }
+      ]
+    }
+  ]
+}
