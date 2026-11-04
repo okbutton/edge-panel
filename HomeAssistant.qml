@@ -3,9 +3,11 @@ import Quickshell
 import Quickshell.Io
 import "Home.js" as Home
 
-// Talks to Home Assistant over its REST API, using the URL and token in home.json.
+// Talks to Home Assistant, using the URL and token in home.json. States and service calls
+// go over the REST API. The registries, the energy dashboard's settings and statistics
+// come over the websocket API, through ha-ws.py.
 // Pages come from home.json, or from Home Assistant's areas if it lists none.
-// States are polled only while the home screen is showing.
+// Nothing is polled unless the home screen is showing.
 Scope {
   id: root
 
@@ -14,8 +16,11 @@ Scope {
 
   property var states: ({})
   property var areaPages: []
+  property var energySources: []
+  property var energy: []
   property string error: ""
   readonly property bool configured: !!settings.url && !!settings.token
+  readonly property bool showEnergy: settings.energy !== false && energySources.length > 0
   readonly property var pages: Home.buildPages(settings.pages.length ? settings.pages : areaPages, states, perPage)
 
   function request(method, path, body, done) {
@@ -46,13 +51,26 @@ Scope {
     })
   }
 
-  function loadAreas() {
-    if (!configured || settings.pages.length) return
-    request("POST", "/api/template", { template: Home.areaTemplate }, text => {
-      root.areaPages = JSON.parse(text).map(page => ({
-        name: page.name, entities: page.entities.filter(Home.isSupported).sort()
-      }))
-    })
+  // The registries and energy settings change rarely: read them on loading, and each
+  // time the home screen opens.
+  function load() {
+    if (!configured || registries.running) return
+    registries.command = ["python3", Quickshell.shellPath("ha-ws.py"), JSON.stringify([
+      { type: "energy/get_prefs" },
+      { type: "config/area_registry/list" },
+      { type: "config/device_registry/list" },
+      { type: "config/entity_registry/list" }
+    ])]
+    registries.running = true
+  }
+
+  function loadStatistics() {
+    if (!configured || !showEnergy || statistics.running) return
+    const midnight = new Date()
+    midnight.setHours(0, 0, 0, 0)
+    statistics.command = ["python3", Quickshell.shellPath("ha-ws.py"),
+      JSON.stringify(Home.statisticsCommands(energySources, midnight.toISOString()))]
+    statistics.running = true
   }
 
   function press(tile) {
@@ -61,23 +79,24 @@ Scope {
     request("POST", `/api/services/${tile.service[0]}/${tile.service[1]}`, data, () => refreshSoon.restart())
   }
 
-  onActiveChanged: if (active && areaPages.length === 0) loadAreas()
-  onConfiguredChanged: {
+  function reset() {
+    states = {}
     areaPages = []
-    loadAreas()
+    energySources = []
+    energy = []
+    load()
     refresh()
   }
+
+  onActiveChanged: if (active) load()
+  onEnergySourcesChanged: loadStatistics()
 
   FileView {
     path: Quickshell.shellPath("home.json")
     watchChanges: true
     printErrors: false
     onFileChanged: reload()
-    onLoaded: {
-      root.areaPages = []
-      root.loadAreas()
-      root.refresh()
-    }
+    onLoaded: root.reset()
 
     JsonAdapter {
       id: settings
@@ -85,6 +104,40 @@ Scope {
       property string url: ""
       property string token: ""
       property var pages: []
+      property var energy: true
+    }
+  }
+
+  Process {
+    id: registries
+    environment: ({ HA_URL: settings.url, HA_TOKEN: settings.token })
+    stdout: StdioCollector {
+      onStreamFinished: {
+        try {
+          const reply = JSON.parse(text)
+          if (reply.error) throw new Error(reply.error)
+          root.energySources = Home.energySources(reply[0])
+          root.areaPages = Home.areaPages(reply[1], reply[2], reply[3])
+        } catch (error) {
+          console.warn(`Home Assistant websocket: ${error.message}`)
+        }
+      }
+    }
+  }
+
+  Process {
+    id: statistics
+    environment: ({ HA_URL: settings.url, HA_TOKEN: settings.token })
+    stdout: StdioCollector {
+      onStreamFinished: {
+        try {
+          const reply = JSON.parse(text)
+          if (reply.error) throw new Error(reply.error)
+          root.energy = Home.readStatistics(root.energySources, reply)
+        } catch (error) {
+          console.warn(`Home Assistant statistics: ${error.message}`)
+        }
+      }
     }
   }
 
@@ -94,6 +147,15 @@ Scope {
     repeat: true
     triggeredOnStart: true
     onTriggered: root.refresh()
+  }
+
+  // Home Assistant compiles statistics every five minutes, so once a minute keeps up.
+  Timer {
+    interval: 60000
+    running: root.active && root.showEnergy
+    repeat: true
+    triggeredOnStart: true
+    onTriggered: root.loadStatistics()
   }
 
   Timer {

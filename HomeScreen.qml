@@ -20,6 +20,11 @@ Rectangle {
     dragX = Math.max(0, Math.min(width, stageX))
   }
 
+  function show(index) {
+    open = true
+    pager.positionViewAtIndex(index, ListView.Beginning)
+  }
+
   function release() {
     if (!dragging) return
     open = dragX < width / 2
@@ -40,6 +45,9 @@ Rectangle {
     property: "active"
     value: root.visible
   }
+
+  // Energy comes first, when Home Assistant's energy dashboard is set up.
+  readonly property var pages: (home.showEnergy ? [{ name: "Energy", energy: true }] : []).concat(home.pages)
 
   Binding {
     target: root.home
@@ -91,7 +99,7 @@ Rectangle {
       clip: true
 
       Repeater {
-        model: root.home.pages
+        model: root.pages
 
         Text {
           required property var modelData
@@ -125,27 +133,42 @@ Rectangle {
     highlightRangeMode: ListView.StrictlyEnforceRange
     boundsBehavior: Flickable.StopAtBounds
     clip: true
-    model: root.home.pages
+    model: root.pages
 
-    delegate: Grid {
-      id: grid
+    delegate: Loader {
       required property var modelData
 
       width: pager.width
       height: pager.height
-      columns: root.gridColumns
-      spacing: Theme.gap
+      sourceComponent: modelData.energy ? energyPage : buttonPage
 
-      Repeater {
-        model: grid.modelData.actions
+      Component {
+        id: energyPage
 
-        ActionButton {
-          required property var modelData
+        EnergyPage { home: root.home }
+      }
 
-          action: modelData
-          onTriggered: root.home.press(modelData)
-          width: (grid.width - (root.gridColumns - 1) * grid.spacing) / root.gridColumns
-          height: (grid.height - (root.gridRows - 1) * grid.spacing) / root.gridRows
+      Component {
+        id: buttonPage
+
+        Grid {
+          id: grid
+
+          columns: root.gridColumns
+          spacing: Theme.gap
+
+          Repeater {
+            model: modelData.actions
+
+            ActionButton {
+              required property var modelData
+
+              action: modelData
+              onTriggered: root.home.press(modelData)
+              width: (grid.width - (root.gridColumns - 1) * grid.spacing) / root.gridColumns
+              height: (grid.height - (root.gridRows - 1) * grid.spacing) / root.gridRows
+            }
+          }
         }
       }
     }
@@ -154,7 +177,7 @@ Rectangle {
   Text {
     anchors.centerIn: pager
     width: pager.width - 200
-    visible: root.home.pages.length === 0
+    visible: root.pages.length === 0
     horizontalAlignment: Text.AlignHCenter
     wrapMode: Text.WordWrap
     text: !root.home.configured ? "Add your Home Assistant URL and a long-lived access token to home.json"

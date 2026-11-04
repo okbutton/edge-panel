@@ -20,8 +20,8 @@ plugin, picked up automatically.
     mute, audio output, screenshot and lock.
   - **Media:** now playing, previous, play/pause, next, and a volume bar you drag.
 - **Home Assistant screen.** Drag in from the right edge, or tap the house, for your
-  smart home: lights, switches, scenes, thermostats, media players and more, one page per
-  room.
+  smart home. It opens on an energy overview like Home Assistant's energy dashboard, then
+  one page per room of lights, switches, scenes, thermostats, media players and more.
 - **The Omarchy menu on the Edge.** Opens the menu on the panel itself, where it works by
   touch, then returns focus to your window when it closes.
 - **Nothing hides behind the panel.** A window that opens on the Edge is moved to the
@@ -35,6 +35,7 @@ plugin, picked up automatically.
 - Hyprland 0.56 or later, with its Lua configuration
 - Quickshell 0.3 or later
 - `wtype`, `jq` and `wpctl` (PipeWire)
+- Python 3, for the Home Assistant screen
 - JetBrainsMono Nerd Font, for the icons
 - [Omarchy](https://omarchy.org), for the menu and the system controls. The rest of the
   panel works on any Hyprland setup.
@@ -133,9 +134,26 @@ and fill it in:
 `home.json` is ignored by git, so the token stays on your machine. Changes apply as soon
 as it's saved.
 
+### Energy
+
+If Home Assistant's energy dashboard is set up, the home screen opens on an Energy page,
+built from the same settings:
+
+- the power in use now, from the grid's power sensor
+- the cost so far today
+- the electricity and gas used so far today, with what each cost
+- a chart of today's use by the hour, stacked by source
+
+The figures are Home Assistant's own long-term statistics, so they match its dashboard.
+To leave the page out, add `"energy": false` to `home.json`.
+
+### Rooms
+
 With `pages` empty, there is one page for each of your Home Assistant areas, holding its
 lights, switches, fans, covers, scenes, scripts, thermostats, media players, locks and
-buttons. To choose for yourself, list the pages:
+buttons. As in Home Assistant's own area cards, it leaves out entities that are disabled,
+hidden, or settings and diagnostics, such as a camera's motion detection switch. To choose
+for yourself, list the pages:
 
 ```json
 "pages": [
@@ -155,7 +173,11 @@ Tapping a button does the obvious thing for its kind:
 | Lock, button | Locks, unlocks or presses it, after a second tap |
 
 A page that holds more buttons than the grid splits into several pages. States refresh
-every two seconds while the home screen is showing, and not at all otherwise.
+every two seconds while the home screen is showing, and energy statistics once a minute.
+Neither refreshes while the home screen is closed.
+
+The areas, the energy settings and the statistics come over Home Assistant's websocket
+API, through `ha-ws.py`, a small helper that needs only Python's standard library.
 
 ## Included plugins
 

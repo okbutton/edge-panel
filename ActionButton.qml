@@ -43,11 +43,14 @@ Rectangle {
   Column {
     anchors.centerIn: parent
     width: parent.width - 24
-    spacing: 14
+    spacing: root.action.detail ? 8 : 14
 
     Text {
       width: parent.width
       horizontalAlignment: Text.AlignHCenter
+      // Shrinks the icon when a short button also has a detail line to fit.
+      height: root.action.detail ? Math.min(implicitHeight, root.height - 40 - label.implicitHeight - detail.implicitHeight - 16) : implicitHeight
+      fontSizeMode: Text.VerticalFit
       text: root.action.icon || ""
       color: root.armed ? Theme.background
         : root.action.status ? root.statusColor
@@ -58,6 +61,7 @@ Rectangle {
     }
 
     Text {
+      id: label
       width: parent.width
       horizontalAlignment: Text.AlignHCenter
       elide: Text.ElideRight
@@ -68,6 +72,7 @@ Rectangle {
     }
 
     Text {
+      id: detail
       width: parent.width
       visible: !!root.action.detail
       horizontalAlignment: Text.AlignHCenter

@@ -123,7 +123,95 @@ function buildPages(pages, states, perPage) {
   return out
 }
 
-// Asks Home Assistant for each area and its entities, as JSON.
-const areaTemplate = '{% set ns = namespace(pages=[]) %}{% for area in areas() %}' +
-  '{% set ns.pages = ns.pages + [{"name": area_name(area), "entities": area_entities(area)}] %}' +
-  '{% endfor %}{{ ns.pages | tojson }}'
+// One page per area, in Home Assistant's order, from its area, device and entity
+// registries. Leaves out entities that are disabled, hidden, or settings and diagnostics
+// (a camera's motion detection, a plug's reload button), as Home Assistant's own area
+// cards do.
+function areaPages(areas, devices, entities) {
+  const deviceArea = {}
+  for (const device of devices || []) deviceArea[device.id] = device.area_id
+  const byArea = {}
+  for (const entity of entities || []) {
+    if (entity.disabled_by || entity.hidden_by || entity.entity_category) continue
+    if (!isSupported(entity.entity_id)) continue
+    const area = entity.area_id || deviceArea[entity.device_id]
+    if (!area) continue
+    if (!byArea[area]) byArea[area] = []
+    byArea[area].push(entity.entity_id)
+  }
+  return (areas || []).filter(area => byArea[area.area_id])
+    .map(area => ({ name: area.name, entities: byArea[area.area_id].sort() }))
+}
+
+const sourceKinds = {
+  grid: { name: "Electricity", colour: "#4e96d6" },
+  gas: { name: "Gas", colour: "#d9822b" },
+  solar: { name: "Solar", colour: "#e8c547" },
+  water: { name: "Water", colour: "#3fb6b6" }
+}
+
+// The energy dashboard's sources, from "energy/get_prefs": what each one measures,
+// what it costs, and (for the grid) its live power. Handles both the old grid format
+// (flow_from lists) and the new one.
+function energySources(prefs) {
+  const sources = []
+  for (const source of (prefs && prefs.energy_sources) || []) {
+    const kind = sourceKinds[source.type]
+    if (!kind) continue
+    const flows = source.flow_from || [source]
+    for (const flow of flows) {
+      if (!flow.stat_energy_from) continue
+      sources.push({ type: source.type, name: kind.name, colour: kind.colour,
+        energy: flow.stat_energy_from, cost: flow.stat_cost || null,
+        rate: source.stat_rate || null })
+    }
+  }
+  return sources
+}
+
+// Today's statistics: hourly use for the chart, and the day's total for each one.
+function statisticsCommands(sources, midnight) {
+  const energyIds = sources.map(source => source.energy)
+  const commands = [{ type: "recorder/statistics_during_period", start_time: midnight,
+    period: "hour", statistic_ids: energyIds, types: ["change"], units: { energy: "kWh" } }]
+  for (const source of sources) {
+    commands.push({ type: "recorder/statistic_during_period", statistic_id: source.energy,
+      calendar: { period: "day" }, types: ["change"], units: { energy: "kWh" } })
+    if (source.cost) commands.push({ type: "recorder/statistic_during_period",
+      statistic_id: source.cost, calendar: { period: "day" }, types: ["change"] })
+  }
+  return commands
+}
+
+// Reads the replies to statisticsCommands into the sources, adding hourly (24 numbers),
+// today and todayCost.
+function readStatistics(sources, results) {
+  const hourly = results[0] || {}
+  let next = 1
+  return sources.map(source => {
+    const hours = []
+    for (let hour = 0; hour < 24; hour++) hours.push(0)
+    for (const row of hourly[source.energy] || []) {
+      const hour = new Date(row.start).getHours()
+      hours[hour] += Math.max(0, row.change || 0)
+    }
+    const today = results[next++]
+    const cost = source.cost ? results[next++] : null
+    return Object.assign({}, source, { hourly: hours,
+      today: today ? today.change || 0 : null,
+      todayCost: cost ? cost.change || 0 : null })
+  })
+}
+
+const currencies = { GBP: "£", EUR: "€", USD: "$" }
+
+function money(value, unit) {
+  if (value === null || value === undefined) return ""
+  const symbol = currencies[unit] || ""
+  return symbol ? `${symbol}${value.toFixed(2)}` : `${value.toFixed(2)} ${unit || ""}`.trim()
+}
+
+function power(watts) {
+  if (isNaN(watts)) return "–"
+  return Math.abs(watts) >= 1000 ? `${(watts / 1000).toFixed(2)} kW` : `${Math.round(watts)} W`
+}

@@ -97,6 +97,7 @@ PanelWindow {
     function swipe(index: int): void { pager.positionViewAtIndex(index, ListView.Beginning) }
     function menu(): void { edgeWindows.openMenu() }
     function home(open: bool): void { homeScreen.open = open }
+    function homePage(index: int): void { homeScreen.show(index) }
   }
 
   Item {
