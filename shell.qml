@@ -98,6 +98,7 @@ PanelWindow {
     function menu(): void { edgeWindows.openMenu() }
     function home(open: bool): void { homeScreen.open = open }
     function homePage(index: int): void { homeScreen.show(index) }
+    function system(open: bool): void { systemScreen.open = open }
   }
 
   Item {
@@ -198,10 +199,10 @@ PanelWindow {
         }
       }
 
-      // Opens the Home Assistant screen, as does dragging in from the right edge.
+      // Opens the Home Assistant screen.
       Text {
         id: homeButton
-        anchors.right: closeMock.left
+        anchors.right: systemButton.left
         anchors.rightMargin: 44
         anchors.verticalCenter: parent.verticalCenter
         text: "\u{F02DC}"
@@ -213,6 +214,24 @@ PanelWindow {
           anchors.fill: parent
           anchors.margins: -20
           onClicked: homeScreen.open = true
+        }
+      }
+
+      // Opens the System screen.
+      Text {
+        id: systemButton
+        anchors.right: closeMock.left
+        anchors.rightMargin: 44
+        anchors.verticalCenter: parent.verticalCenter
+        text: "\u{F061A}"
+        color: Theme.textDim
+        font.family: Theme.font
+        font.pixelSize: 48
+
+        MouseArea {
+          anchors.fill: parent
+          anchors.margins: -20
+          onClicked: systemScreen.open = true
         }
       }
 
@@ -263,17 +282,6 @@ PanelWindow {
       }
     }
 
-    // Drag in from the right edge for the Home Assistant screen.
-    MouseArea {
-      x: parent.width - width
-      y: header.height
-      width: 48
-      height: parent.height - y
-      preventStealing: true
-      onPositionChanged: mouse => homeScreen.follow(mapToItem(stage, mouse.x, mouse.y).x)
-      onReleased: homeScreen.release()
-    }
-
     HomeScreen {
       id: homeScreen
       home: home
@@ -281,6 +289,14 @@ PanelWindow {
       gridRows: Math.max(1, config.buttonRows)
       width: parent.width
       height: parent.height
+      onOpenChanged: if (open) systemScreen.open = false
+    }
+
+    SystemScreen {
+      id: systemScreen
+      width: parent.width
+      height: parent.height
+      onOpenChanged: if (open) homeScreen.open = false
     }
 
     PullDown {

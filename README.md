@@ -19,9 +19,10 @@ plugin, picked up automatically.
   - **System controls:** the Omarchy menu, stay awake, night light, do not disturb, mic
     mute, audio output, screenshot and lock.
   - **Media:** now playing, previous, play/pause, next, and a volume bar you drag.
-- **Home Assistant screen.** Drag in from the right edge, or tap the house, for your
-  smart home. It opens on an energy overview like Home Assistant's energy dashboard, then
+- **Home Assistant screen.** Tap the house in the header for your smart home. It opens on an energy overview like Home Assistant's energy dashboard, then
   one page per room of lights, switches, scenes, thermostats, media players and more.
+- **System screen.** Tap the chip in the header for this computer's CPU, memory, GPU,
+  network and disks, with live graphs.
 - **The Omarchy menu on the Edge.** Opens the menu on the panel itself, where it works by
   touch, then returns focus to your window when it closes.
 - **Nothing hides behind the panel.** A window that opens on the Edge is moved to the
@@ -115,8 +116,8 @@ per inch, against 109 for a 27" 1440p monitor).
 
 ## Home Assistant
 
-The home screen slides in from the right. Drag in from the right edge of the panel, or
-tap the house in the header. To go back, drag from its left edge or tap the arrow. Its
+Tap the house in the header and the home screen slides in from the right. To go back,
+tap the arrow or drag from its left edge. Its
 pages swipe sideways, and the tabs in its header jump straight to a page.
 
 To connect it, create a long-lived access token in Home Assistant (your profile,
@@ -178,6 +179,21 @@ Neither refreshes while the home screen is closed.
 
 The areas, the energy settings and the statistics come over Home Assistant's websocket
 API, through `ha-ws.py`, a small helper that needs only Python's standard library.
+
+## System
+
+Tap the chip in the header for a screen about this computer:
+
+- **CPU:** use overall and for each core, temperature, clock speed and load
+- **Memory:** use, and swap
+- **GPU:** use, temperature, power draw and video memory. NVIDIA cards are read with
+  `nvidia-smi`, AMD and Intel ones from `/sys`
+- **Network:** download and upload speeds, the interface and its address
+- **Disks:** read and write speeds, and how full each filesystem is
+
+CPU, memory, GPU and network each have a graph of the last two minutes. The readings
+come from `sysinfo.py`, which reads `/proc` and `/sys` every two seconds, and runs only
+while the screen is showing.
 
 ## Included plugins
 
