@@ -99,6 +99,7 @@ PanelWindow {
     function home(open: bool): void { homeScreen.open = open }
     function homePage(index: int): void { homeScreen.show(index) }
     function system(open: bool): void { systemScreen.open = open }
+    function systemPage(index: int): void { systemScreen.show(index) }
   }
 
   Item {

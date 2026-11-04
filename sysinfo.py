@@ -161,6 +161,40 @@ def disk_bytes():
     return read_bytes, written
 
 
+CLOCK_TICKS = os.sysconf("SC_CLK_TCK")
+PAGE_SIZE = os.sysconf("SC_PAGE_SIZE")
+
+
+def process_times():
+    """CPU time used so far by each process, with its name and resident memory."""
+    found = {}
+    for entry in os.scandir("/proc"):
+        if not entry.name.isdigit():
+            continue
+        stat = read(f"/proc/{entry.name}/stat")
+        if not stat:
+            continue
+        # The name sits in brackets and may hold spaces, so split after it.
+        name = stat[stat.find("(") + 1:stat.rfind(")")]
+        fields = stat[stat.rfind(")") + 2:].split()
+        found[int(entry.name)] = {"name": name, "ticks": int(fields[11]) + int(fields[12]),
+                                  "memory": int(fields[21]) * PAGE_SIZE}
+    return found
+
+
+def top_processes(now, before, elapsed, count=12):
+    """The busiest processes since the last reading. 100% is one core, as in top."""
+    busiest = []
+    for pid, process in now.items():
+        old = before.get(pid)
+        if not old or old["name"] != process["name"]:
+            continue
+        usage = 100 * (process["ticks"] - old["ticks"]) / CLOCK_TICKS / elapsed
+        busiest.append({"pid": pid, "name": process["name"], "cpu": usage, "memory": process["memory"]})
+    busiest.sort(key=lambda process: (process["cpu"], process["memory"]), reverse=True)
+    return busiest[:count]
+
+
 def main():
     interval = float(sys.argv[1]) if len(sys.argv) > 1 else 2
     model = cpu_model()
@@ -169,7 +203,8 @@ def main():
     while True:
         now = time.monotonic()
         interface = default_interface()
-        sample = {"cpu": cpu_times(), "net": network_bytes(interface), "disk": disk_bytes(), "time": now}
+        sample = {"cpu": cpu_times(), "net": network_bytes(interface), "disk": disk_bytes(),
+                  "processes": process_times(), "time": now}
         if previous:
             elapsed = now - previous["time"]
             usage = [100 * (busy - old_busy) / max(1, total - old_total)
@@ -186,6 +221,7 @@ def main():
                             "down": max(0, sample["net"][0] - previous["net"][0]) / elapsed,
                             "up": max(0, sample["net"][1] - previous["net"][1]) / elapsed},
                 "disks": disks(),
+                "processes": top_processes(sample["processes"], previous["processes"], elapsed),
                 "io": {"read": max(0, sample["disk"][0] - previous["disk"][0]) / elapsed,
                        "write": max(0, sample["disk"][1] - previous["disk"][1]) / elapsed},
             }), flush=True)

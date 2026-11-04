@@ -1,4 +1,5 @@
 import QtQuick
+import QtQml.Models as Models
 import Quickshell
 import Quickshell.Io
 
@@ -42,6 +43,11 @@ SideScreen {
     return days ? `${days}d ${hours}h` : hours ? `${hours}h ${minutes}m` : `${minutes}m`
   }
 
+  function show(index) {
+    open = true
+    pager.positionViewAtIndex(index, ListView.Beginning)
+  }
+
   function record(next) {
     const add = (series, value) => series.concat([value]).slice(-historyLength)
     history = {
@@ -57,14 +63,44 @@ SideScreen {
   title: "System"
   icon: "\u{F061A}"
 
-  tabs: Text {
+  readonly property var pageNames: ["Overview", "Processes"]
+
+  tabs: Row {
     anchors.verticalCenter: parent.verticalCenter
     width: parent.width
-    elide: Text.ElideRight
-    text: root.info ? `${root.info.host}  ·  ${root.cpu.model}  ·  up ${root.duration(root.info.uptime)}` : ""
-    color: Theme.textDim
-    font.family: Theme.font
-    font.pixelSize: 30
+    spacing: 40
+
+    Repeater {
+      model: root.pageNames
+
+      Text {
+        required property string modelData
+        required property int index
+
+        text: modelData
+        color: index === pager.currentIndex ? Theme.accent : Theme.textDim
+        font.family: Theme.font
+        font.pixelSize: 34
+        font.bold: index === pager.currentIndex
+
+        MouseArea {
+          anchors.fill: parent
+          anchors.margins: -16
+          onClicked: pager.positionViewAtIndex(parent.index, ListView.Beginning)
+        }
+      }
+    }
+
+    Text {
+      anchors.verticalCenter: parent.verticalCenter
+      width: parent.width - x
+      leftPadding: 20
+      elide: Text.ElideRight
+      text: root.info ? `${root.info.host}  ·  ${root.cpu.model}  ·  up ${root.duration(root.info.uptime)}` : ""
+      color: Theme.textDim
+      font.family: Theme.font
+      font.pixelSize: 30
+    }
   }
 
   Process {
@@ -191,11 +227,23 @@ SideScreen {
     }
   }
 
+  ListView {
+    id: pager
+
+    anchors.fill: parent
+    visible: !!root.info
+    orientation: ListView.Horizontal
+    snapMode: ListView.SnapOneItem
+    highlightRangeMode: ListView.StrictlyEnforceRange
+    boundsBehavior: Flickable.StopAtBounds
+    clip: true
+
+    model: Models.ObjectModel {
   Row {
     id: cards
-    anchors.fill: parent
+    width: pager.width
+    height: pager.height
     spacing: Theme.gap
-    visible: !!root.info
 
     Card {
       title: "CPU"
@@ -339,6 +387,84 @@ SideScreen {
           }
         }
       }
+    }
+  }
+
+  // The busiest processes since the last reading, in two columns.
+  Grid {
+    id: processes
+    width: pager.width
+    height: pager.height
+    flow: Grid.TopToBottom
+    rows: 6
+    columns: 2
+    spacing: Theme.gap
+
+    readonly property real rowWidth: (width - spacing) / 2
+    readonly property real rowHeight: (height - 5 * spacing) / 6
+
+    Repeater {
+      model: root.info ? root.info.processes : []
+
+      Rectangle {
+        required property var modelData
+
+        width: processes.rowWidth
+        height: processes.rowHeight
+        radius: Theme.radius
+        color: Theme.surface
+        border.color: Theme.line
+        border.width: 2
+        clip: true
+
+        // How busy, as a share of one core.
+        Rectangle {
+          width: parent.width * Math.min(1, parent.modelData.cpu / 100)
+          height: parent.height
+          radius: Theme.radius
+          color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
+        }
+
+        Text {
+          id: processName
+          x: 28
+          anchors.verticalCenter: parent.verticalCenter
+          width: parent.width - x - details.width - 40
+          elide: Text.ElideRight
+          text: parent.modelData.name
+          color: Theme.text
+          font.family: Theme.font
+          font.pixelSize: 34
+          font.bold: true
+        }
+
+        Text {
+          id: details
+          anchors.right: cpuText.left
+          anchors.rightMargin: 36
+          anchors.verticalCenter: parent.verticalCenter
+          text: `${root.bytes(parent.modelData.memory)}  ·  ${parent.modelData.pid}`
+          color: Theme.textDim
+          font.family: Theme.font
+          font.pixelSize: 26
+        }
+
+        Text {
+          id: cpuText
+          anchors.right: parent.right
+          anchors.rightMargin: 28
+          anchors.verticalCenter: parent.verticalCenter
+          width: 150
+          horizontalAlignment: Text.AlignRight
+          text: `${parent.modelData.cpu.toFixed(1)}%`
+          color: Theme.text
+          font.family: Theme.font
+          font.pixelSize: 38
+          font.bold: true
+        }
+      }
+    }
+  }
     }
   }
 

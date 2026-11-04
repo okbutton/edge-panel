@@ -22,7 +22,7 @@ plugin, picked up automatically.
 - **Home Assistant screen.** Tap the house in the header for your smart home. It opens on an energy overview like Home Assistant's energy dashboard, then
   one page per room of lights, switches, scenes, thermostats, media players and more.
 - **System screen.** Tap the chip in the header for this computer's CPU, memory, GPU,
-  network and disks, with live graphs.
+  network and disks, with live graphs, and the processes using the most CPU.
 - **The Omarchy menu on the Edge.** Opens the menu on the panel itself, where it works by
   touch, then returns focus to your window when it closes.
 - **Nothing hides behind the panel.** A window that opens on the Edge is moved to the
@@ -191,7 +191,9 @@ Tap the chip in the header for a screen about this computer:
 - **Network:** download and upload speeds, the interface and its address
 - **Disks:** read and write speeds, and how full each filesystem is
 
-CPU, memory, GPU and network each have a graph of the last two minutes. The readings
+CPU, memory, GPU and network each have a graph of the last two minutes. Swipe across,
+or tap **Processes**, for the twelve busiest processes, with each one's memory and process
+ID. As in `top`, 100% is one whole core. The readings
 come from `sysinfo.py`, which reads `/proc` and `/sys` every two seconds, and runs only
 while the screen is showing.
 
