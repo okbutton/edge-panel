@@ -3,5 +3,7 @@
   "buttonColumns": 6,
   "buttonRows": 3,
   "screen": "",
-  "skin": "pixel"
+  "skin": "omarchy",
+  "backgroundOpacity": 0.6,
+  "tileOpacity": 0.85
 }

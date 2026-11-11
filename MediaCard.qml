@@ -61,7 +61,7 @@ Rectangle {
           width: (transport.width - 2 * Theme.gap) / 3
           height: 130
           radius: Theme.radius
-          color: tap.pressed ? Theme.surfacePressed : Theme.background
+          color: tap.pressed ? Theme.surfacePressed : Theme.inset
           opacity: root.player ? 1 : 0.4
 
           Text {
@@ -103,7 +103,7 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         height: 84
         radius: Theme.radius
-        color: Theme.background
+        color: Theme.inset
 
         Rectangle {
           width: track.width * Math.min(root.volume, 1)

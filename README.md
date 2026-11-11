@@ -104,6 +104,8 @@ The panel compensates for any scale, so one layout pixel is always one screen pi
 | `buttonRows` | `3` | Rows of buttons on fixed pages. A page shows at most columns × rows buttons |
 | `screen` | `""` | A monitor name such as `DP-1`. Leave empty to find the Edge |
 | `skin` | `"matte-black"` | The panel's look: a file in `skins/`, or `"omarchy"` (see Skins) |
+| `backgroundOpacity` | `1` | How solid the panel's background is, from `0` (wallpaper shows fully) to `1` (solid). The header stays solid, as it covers Omarchy's bar on the Edge |
+| `tileOpacity` | `0.85` | How solid buttons, tiles and cards are, from `0` to `1`. They keep the skin's surface colour, so a little below `1` gives them a faint see-through tint like Omarchy's terminals; `1` makes them solid |
 
 The `EDGE_SCREEN` environment variable overrides `screen`, which is handy for trying the
 panel on an ordinary monitor:

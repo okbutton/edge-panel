@@ -48,7 +48,8 @@ Rectangle {
   }
 
   y: dragging ? dragY - height : (open ? 0 : -height)
-  color: Theme.background
+  // See-through: the window's own background is behind, so none of its own.
+  color: Theme.seeThrough ? "transparent" : Theme.background
   visible: y > -height
 
   Behavior on y {

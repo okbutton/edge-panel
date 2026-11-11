@@ -26,7 +26,7 @@ PanelWindow {
   anchors.bottom: true
   implicitWidth: 2560 / dpr
   implicitHeight: 720 / dpr
-  color: Theme.background
+  color: Theme.panelBackground
   exclusionMode: ExclusionMode.Ignore
 
   // Never take keyboard focus, or tapping a button would defocus the app it controls.
@@ -55,6 +55,8 @@ PanelWindow {
       property int buttonRows: 3
       property string screen: ""
       property string skin: "matte-black" // read by Theme.qml
+      property real backgroundOpacity: 1 // read by Theme.qml
+      property real tileOpacity: 0.85 // read by Theme.qml
     }
   }
 
@@ -110,11 +112,30 @@ PanelWindow {
     scale: 1 / win.dpr
     transformOrigin: Item.TopLeft
 
+    // How much of the app controls a sliding screen covers, 0 to 1. With a see-through
+    // background the controls would show through it, so they fade out as it slides in.
+    readonly property real covered: Math.max(
+      homeScreen.visible ? 1 - homeScreen.x / width : 0,
+      systemScreen.visible ? 1 - systemScreen.x / width : 0,
+      pullDown.visible ? 1 + pullDown.y / height : 0)
+    readonly property real appOpacity: Theme.seeThrough ? 1 - covered : 1
+
+    // With a see-through background the header stays solid: Omarchy's bar runs on every
+    // monitor, the Edge included, and sits just behind it.
+    Rectangle {
+      visible: Theme.seeThrough
+      width: parent.width
+      height: 92
+      color: Theme.background
+    }
+
     // Pull down from here for workspaces and media.
     Item {
       id: header
       width: parent.width
       height: 92
+      opacity: stage.appOpacity
+      visible: opacity > 0
 
       Text {
         id: appIcon
@@ -270,6 +291,8 @@ PanelWindow {
       boundsBehavior: Flickable.StopAtBounds
       clip: true
       model: win.plugin.pages
+      opacity: stage.appOpacity
+      visible: opacity > 0
 
       delegate: PluginPage {
         required property var modelData

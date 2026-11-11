@@ -14,15 +14,27 @@ Item {
   anchors.fill: parent
 
   // Behind the box, down and to the right. It belongs to the box itself, as only a direct
-  // child with a negative z draws beneath its parent.
+  // child with a negative z draws beneath its parent. It is drawn as the L that sticks out
+  // past the box, not a whole box, so it doesn't darken a see-through tile from behind.
+  Rectangle {
+    parent: root.box
+    visible: root.showShadow
+    z: -1
+    x: root.width
+    y: Theme.shadow
+    width: Theme.shadow
+    height: root.height
+    color: Theme.shadowColor
+  }
+
   Rectangle {
     parent: root.box
     visible: root.showShadow
     z: -1
     x: Theme.shadow
-    y: Theme.shadow
-    width: root.width
-    height: root.height
+    y: root.height
+    width: root.width - Theme.shadow
+    height: Theme.shadow
     color: Theme.shadowColor
   }
 
@@ -42,7 +54,7 @@ Item {
         y: parent.atBottom ? root.height - root.step : 0
         width: root.step
         height: root.step
-        color: Theme.background
+        color: Theme.panelBackground
       }
 
       Rectangle {

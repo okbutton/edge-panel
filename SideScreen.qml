@@ -29,7 +29,8 @@ Rectangle {
 
   x: dragging ? dragX : (open ? 0 : width)
   visible: x < width
-  color: Theme.background
+  // See-through: the window's own background is behind, so none of its own.
+  color: Theme.seeThrough ? "transparent" : Theme.background
 
   Behavior on x {
     enabled: !root.dragging
