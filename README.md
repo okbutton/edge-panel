@@ -154,8 +154,18 @@ To leave the page out, add `"energy": false` to `home.json`.
 With `pages` empty, there is one page for each of your Home Assistant areas, holding its
 lights, switches, fans, covers, scenes, scripts, thermostats, media players, locks and
 buttons. As in Home Assistant's own area cards, it leaves out entities that are disabled,
-hidden, or settings and diagnostics, such as a camera's motion detection switch. To choose
-for yourself, list the pages:
+hidden, or settings and diagnostics, such as a camera's motion detection switch. It also
+leaves out buttons that reboot, restart or shut down a machine, so a stray touch can't.
+
+A room with a temperature or humidity sensor gets a **Room** tile showing them, preferring
+a device that measures both (a room sensor over a thermostat). Only sensors named
+`…_temperature` count, so a 3D printer's nozzle and bed readings stay out. A room whose
+sensors aren't reporting yet has no tile.
+
+If [Bermuda](https://github.com/agittins/bermuda) tracks phones by room, a **People** page
+comes first after Energy, showing which room each phone is in.
+
+To choose for yourself, list the pages:
 
 ```json
 "pages": [

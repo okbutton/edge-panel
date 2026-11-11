@@ -18,6 +18,8 @@ const icons = {
   lock: "\u{F033E}",
   unlock: "\u{F033F}",
   button: "\u{F12A8}",
+  thermometer: "\u{F050F}",
+  person: "\u{F0004}",
   plus: "\u{F0415}",
   minus: "\u{F0374}"
 }
@@ -107,11 +109,12 @@ function tilesFor(entityId, state) {
   }
 }
 
-// Pages are [{ name, entities }]; long pages split so every button keeps its size.
+// Pages are [{ name, entities, sensors, people }]; long pages split so every button keeps its size.
 function buildPages(pages, states, perPage) {
   const out = []
   for (const page of pages) {
-    let tiles = []
+    let tiles = roomTile(page.sensors, states)
+    for (const entityId of page.people || []) tiles.push(personTile(entityId, states[entityId]))
     for (const entityId of page.entities || []) tiles = tiles.concat(tilesFor(entityId, states[entityId]))
     if (tiles.length === 0) continue
     const count = Math.ceil(tiles.length / perPage)
@@ -123,24 +126,77 @@ function buildPages(pages, states, perPage) {
   return out
 }
 
+// Buttons that restart or power off the machine behind a device (OctoPrint's host, a
+// router) are a stray touch from trouble, so area pages leave them out.
+const hiddenButtons = /^button\..*_(reboot|restart|shutdown)(_system|_octoprint)?$/
+
 // One page per area, in Home Assistant's order, from its area, device and entity
 // registries. Leaves out entities that are disabled, hidden, or settings and diagnostics
 // (a camera's motion detection, a plug's reload button), as Home Assistant's own area
-// cards do.
+// cards do. An area's sensors are kept aside for its room temperature tile.
 function areaPages(areas, devices, entities) {
   const deviceArea = {}
   for (const device of devices || []) deviceArea[device.id] = device.area_id
   const byArea = {}
   for (const entity of entities || []) {
     if (entity.disabled_by || entity.hidden_by || entity.entity_category) continue
-    if (!isSupported(entity.entity_id)) continue
+    const sensor = domainOf(entity.entity_id) === "sensor"
+    if (!sensor && !isSupported(entity.entity_id)) continue
+    if (hiddenButtons.test(entity.entity_id)) continue
     const area = entity.area_id || deviceArea[entity.device_id]
     if (!area) continue
-    if (!byArea[area]) byArea[area] = []
-    byArea[area].push(entity.entity_id)
+    if (!byArea[area]) byArea[area] = { entities: [], sensors: [] }
+    if (sensor) byArea[area].sensors.push({ entity: entity.entity_id, device: entity.device_id })
+    else byArea[area].entities.push(entity.entity_id)
   }
   return (areas || []).filter(area => byArea[area.area_id])
-    .map(area => ({ name: area.name, entities: byArea[area.area_id].sort() }))
+    .map(area => ({ name: area.name, entities: byArea[area.area_id].entities.sort(),
+      sensors: byArea[area.area_id].sensors }))
+}
+
+function numeric(state) {
+  return state && state.state !== "" && !isNaN(Number(state.state))
+}
+
+// The room's temperature and humidity, as one tile that only shows them. Uses sensors
+// named "…_temperature" (so a 3D printer's bed and nozzle readings stay out), preferring
+// a device that also measures humidity: a room sensor rather than a thermostat.
+function roomTile(sensors, states) {
+  const of = kind => (sensors || []).filter(sensor => {
+    const state = states[sensor.entity]
+    return numeric(state) && (state.attributes || {}).device_class === kind
+  })
+  const humidity = of("humidity")
+  const temperatures = of("temperature").filter(sensor => /_temperature$/.test(sensor.entity))
+  const paired = temperatures.find(t => humidity.some(h => h.device === t.device))
+  const temperature = paired || temperatures[0]
+  if (!temperature && !humidity.length) return []
+  const humid = (temperature && humidity.find(h => h.device === temperature.device)) || humidity[0]
+  const parts = []
+  if (temperature) {
+    const state = states[temperature.entity]
+    parts.push(`${Math.round(Number(state.state) * 10) / 10}${(state.attributes || {}).unit_of_measurement || "°"}`)
+  }
+  if (humid) parts.push(`${Math.round(Number(states[humid.entity].state))}%`)
+  return [{ entity: (temperature || humid).entity, icon: icons.thermometer, label: "Room",
+    detail: parts.join(" · ") }]
+}
+
+// Who is in which room, from Bermuda's area sensors ("Bruce's iPhone Area"). Null when
+// Bermuda isn't installed.
+function peoplePage(entities) {
+  const people = (entities || []).filter(entity => entity.platform === "bermuda" &&
+    !entity.disabled_by && /_area$/.test(entity.entity_id)).map(entity => entity.entity_id).sort()
+  return people.length ? { name: "People", people } : null
+}
+
+function personTile(entityId, state) {
+  const name = ((state && state.attributes.friendly_name) || entityId)
+    .replace(/ Area$/, "").replace(/['’]s (iPhone|Phone|Pixel|Galaxy|Watch)$/i, "")
+  const value = state ? state.state : "unknown"
+  const away = value === "unknown" || value === "unavailable" || value === "not_home"
+  return { entity: entityId, icon: icons.person, label: name, active: !away,
+    detail: away ? "Not seen" : value }
 }
 
 const sourceKinds = {

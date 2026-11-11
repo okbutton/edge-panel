@@ -117,7 +117,8 @@ Scope {
           const reply = JSON.parse(text)
           if (reply.error) throw new Error(reply.error)
           root.energySources = Home.energySources(reply[0])
-          root.areaPages = Home.areaPages(reply[1], reply[2], reply[3])
+          const people = Home.peoplePage(reply[3])
+          root.areaPages = (people ? [people] : []).concat(Home.areaPages(reply[1], reply[2], reply[3]))
         } catch (error) {
           console.warn(`Home Assistant websocket: ${error.message}`)
         }
