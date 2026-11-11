@@ -31,7 +31,8 @@ Rectangle {
   radius: Theme.radius
   color: armed ? Theme.danger : touch.pressed ? Theme.surfacePressed : Theme.surface
   border.color: action.active || touch.pressed ? (action.danger ? Theme.danger : Theme.accent) : Theme.line
-  border.width: action.active ? 4 : 2
+  border.width: action.active ? 2 * Theme.borderWidth : Theme.borderWidth
+  Pixels {}
 
   // A dangerous button needs a second tap, so a stray touch can't close anything.
   Timer {

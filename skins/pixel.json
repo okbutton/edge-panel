@@ -1,0 +1,14 @@
+{
+  "base": "omarchy",
+  "font": "DepartureMono Nerd Font",
+  "line": "@textDim",
+  "shadowColor": "#000000",
+  "radius": 0,
+  "borderWidth": 6,
+  "shadow": 6,
+  "pixelCorners": true,
+  "gap": 18,
+  "labelSize": 33,
+  "detailSize": 22,
+  "iconSize": 66
+}

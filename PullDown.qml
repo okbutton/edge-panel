@@ -130,7 +130,8 @@ Rectangle {
           radius: Theme.radius
           color: current ? Theme.accent : Theme.surface
           border.color: visibleElsewhere && !current ? Theme.accent : Theme.line
-          border.width: 3
+          border.width: Theme.borderWidth + 1
+          Pixels {}
 
           Text {
             anchors.centerIn: parent

@@ -14,7 +14,8 @@ Rectangle {
   radius: Theme.radius
   color: Theme.surface
   border.color: Theme.line
-  border.width: 2
+  border.width: Theme.borderWidth
+  Pixels {}
 
   PwObjectTracker { objects: root.sink ? [root.sink] : [] }
 

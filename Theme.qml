@@ -5,8 +5,9 @@ import Quickshell
 import Quickshell.Io
 
 // The panel's look, from the skin named in config.json ("skin"). A skin is a JSON file in
-// skins/ that sets any of the keys in `defaults`; keys it leaves out keep their default.
-// The skin "omarchy" follows Omarchy's current theme instead, changing when it does.
+// skins/ that sets any of the keys in `defaults`; keys it leaves out come from its "base"
+// (another skin, or "omarchy"), then from the defaults. The skin "omarchy", or a base of
+// "omarchy", takes colours from Omarchy's current theme and changes when it does.
 // Sizes are Edge pixels. The panel is about 184 pixels per inch, so 7 px is 1 mm.
 Singleton {
   id: root
@@ -26,29 +27,54 @@ Singleton {
     gap: 16,
     labelSize: 32,
     detailSize: 26,
-    iconSize: 72
+    iconSize: 72,
+    borderWidth: 2,
+    shadow: 0,
+    pixelCorners: false,
+    shadowColor: "@line"
   })
 
+  // A skin's value for key, or the default. A value of "@name" means "the same as name",
+  // so a skin can reuse its base's colours: "line": "@textDim".
+  function value(key) {
+    let v = skin[key] ?? defaults[key]
+    for (let hops = 0; typeof v === "string" && v.startsWith("@") && hops < 4; hops++) {
+      const other = v.slice(1)
+      v = skin[other] ?? defaults[other]
+    }
+    return v
+  }
+
   property string skinName: "matte-black"
-  property var skin: ({})
+  property var own: ({})
+  property var base: ({})
+  readonly property string baseName: skinName === "omarchy" ? "omarchy" : own.base || ""
+  readonly property var skin: Object.assign({}, base, own)
 
-  readonly property color background: skin.background ?? defaults.background
-  readonly property color surface: skin.surface ?? defaults.surface
-  readonly property color surfacePressed: skin.surfacePressed ?? defaults.surfacePressed
-  readonly property color line: skin.line ?? defaults.line
-  readonly property color text: skin.text ?? defaults.text
-  readonly property color textDim: skin.textDim ?? defaults.textDim
-  readonly property color accent: skin.accent ?? defaults.accent
-  readonly property color danger: skin.danger ?? defaults.danger
+  readonly property color background: value("background")
+  readonly property color surface: value("surface")
+  readonly property color surfacePressed: value("surfacePressed")
+  readonly property color line: value("line")
+  readonly property color text: value("text")
+  readonly property color textDim: value("textDim")
+  readonly property color accent: value("accent")
+  readonly property color danger: value("danger")
+  readonly property color shadowColor: value("shadowColor")
 
-  readonly property string font: skin.font ?? defaults.font
-  readonly property int radius: skin.radius ?? defaults.radius
-  readonly property int gap: skin.gap ?? defaults.gap
-  readonly property int labelSize: skin.labelSize ?? defaults.labelSize
-  readonly property int detailSize: skin.detailSize ?? defaults.detailSize
-  readonly property int iconSize: skin.iconSize ?? defaults.iconSize
+  readonly property string font: value("font")
+  readonly property int radius: value("radius")
+  readonly property int gap: value("gap")
+  readonly property int labelSize: value("labelSize")
+  readonly property int detailSize: value("detailSize")
+  readonly property int iconSize: value("iconSize")
 
-  readonly property bool followsOmarchy: skinName === "omarchy"
+  // Pixel-art touches: border thickness, a hard drop shadow offset (0 for none), and
+  // corners stepped one border-width in instead of rounded. See Pixels.qml.
+  readonly property int borderWidth: value("borderWidth")
+  readonly property int shadow: value("shadow")
+  readonly property bool pixelCorners: value("pixelCorners")
+
+  readonly property bool followsOmarchy: baseName === "omarchy"
   readonly property string omarchyDir: Quickshell.env("HOME") + "/.local/state/omarchy/current"
 
   // Omarchy's colors.toml, as panel colours. Dark themes lift buttons above the background
@@ -60,10 +86,15 @@ Singleton {
       if (match) c[match[1]] = match[2]
     }
     const light = /^\s*mode\s*=\s*"light"/m.test(toml)
+    // Some themes (Solitude) make their lighter background the background itself; then
+    // buttons use the selection colour so they still stand out.
+    let surface = light ? c.dark_background : c.lighter_background
+    const flat = !surface || surface.toLowerCase() === (c.background || "").toLowerCase()
+    if (flat) surface = c.selection
     const out = {
       background: c.background,
-      surface: light ? c.dark_background : c.lighter_background,
-      surfacePressed: c.selection,
+      surface: surface,
+      surfacePressed: flat ? c.muted : c.selection,
       line: c.muted,
       text: c.foreground,
       textDim: c.light_foreground,
@@ -88,25 +119,50 @@ Singleton {
     }
   }
 
+  // The skin's own file ("omarchy" has none: it is all base).
   FileView {
-    id: skinFile
-
-    path: root.followsOmarchy ? root.omarchyDir + "/theme/colors.toml"
-      : Quickshell.shellPath(`skins/${root.skinName}.json`)
+    path: root.skinName === "omarchy" ? "" : Quickshell.shellPath(`skins/${root.skinName}.json`)
     watchChanges: true
     printErrors: false
     onFileChanged: reload()
+    onPathChanged: if (!path) root.own = {}
     onLoaded: {
       try {
-        root.skin = root.followsOmarchy ? root.fromOmarchy(text()) : JSON.parse(text())
+        root.own = JSON.parse(text())
       } catch (error) {
         console.warn(`Skin ${root.skinName}: ${error.message}`)
-        root.skin = {}
+        root.own = {}
       }
     }
     onLoadFailed: {
       console.warn(`Skin ${root.skinName} not found, using the default look`)
-      root.skin = {}
+      root.own = {}
+    }
+  }
+
+  // The skin it builds on: Omarchy's colours, or another skin's file.
+  FileView {
+    id: baseFile
+
+    path: root.followsOmarchy ? root.omarchyDir + "/theme/colors.toml"
+      : root.baseName ? Quickshell.shellPath(`skins/${root.baseName}.json`) : ""
+    watchChanges: true
+    printErrors: false
+    onFileChanged: reload()
+    onPathChanged: if (!path) root.base = {}
+    onLoaded: {
+      try {
+        const values = root.followsOmarchy ? root.fromOmarchy(text()) : JSON.parse(text())
+        delete values.base
+        root.base = values
+      } catch (error) {
+        console.warn(`Skin base ${root.baseName}: ${error.message}`)
+        root.base = {}
+      }
+    }
+    onLoadFailed: {
+      console.warn(`Skin base ${root.baseName} not found`)
+      root.base = {}
     }
   }
 
@@ -118,7 +174,7 @@ Singleton {
     printErrors: false
     onFileChanged: {
       reload()
-      skinFile.reload()
+      baseFile.reload()
     }
   }
 }

@@ -133,7 +133,8 @@ SideScreen {
     radius: Theme.radius
     color: Theme.surface
     border.color: Theme.line
-    border.width: 2
+    border.width: Theme.borderWidth
+    Pixels {}
 
     Column {
       id: heading
@@ -417,7 +418,8 @@ SideScreen {
         radius: Theme.radius
         color: Theme.surface
         border.color: Theme.line
-        border.width: 2
+        border.width: Theme.borderWidth
+        Pixels {}
         clip: true
 
         // How busy, as a share of one core.
@@ -496,7 +498,8 @@ SideScreen {
           radius: Theme.radius
           color: Theme.surface
           border.color: Theme.line
-          border.width: 2
+          border.width: Theme.borderWidth
+          Pixels {}
           clip: true
 
           // As a share of the busiest program.

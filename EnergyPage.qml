@@ -46,7 +46,8 @@ Item {
     radius: Theme.radius
     color: Theme.surface
     border.color: Theme.line
-    border.width: 2
+    border.width: Theme.borderWidth
+    Pixels {}
 
     Column {
       anchors.left: parent.left
@@ -143,7 +144,8 @@ Item {
     radius: Theme.radius
     color: Theme.surface
     border.color: Theme.line
-    border.width: 2
+    border.width: Theme.borderWidth
+    Pixels {}
 
     Text {
       id: chartTitle

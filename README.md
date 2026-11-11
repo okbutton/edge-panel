@@ -120,10 +120,14 @@ per inch, against 109 for a 27" 1440p monitor).
 ### Skins
 
 A skin is a JSON file in `skins/`, named in `config.json` without its `.json`. Switching
-skins, or editing the one in use, changes the panel at once. Three come with it:
-`matte-black` (the default), `paper` (light) and `high-contrast`.
+skins, or editing the one in use, changes the panel at once. Four come with it:
+`matte-black` (the default), `paper` (light), `high-contrast`, and `pixel`, a pixel-art
+look in your Omarchy theme's colours. `pixel` uses the
+[Departure Mono Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases); install it
+to `~/.local/share/fonts` and restart the panel, as Qt only sees new fonts at start.
 
-A skin sets any of these keys, and keys it leaves out keep Matte Black's value:
+A skin sets any of these keys. Keys it leaves out come from its `base`, then from Matte
+Black:
 
 | Key | Default | Used for |
 |---|---|---|
@@ -139,13 +143,27 @@ A skin sets any of these keys, and keys it leaves out keep Matte Black's value:
 | `radius` | `20` | Corner rounding, in Edge pixels |
 | `gap` | `16` | Space between buttons |
 | `labelSize`, `detailSize`, `iconSize` | `32`, `26`, `72` | Text and icon sizes |
+| `borderWidth` | `2` | Border thickness; active buttons get twice this |
+| `shadow` | `0` | Hard drop shadow offset, in Edge pixels. `0` for none |
+| `shadowColor` | `@line` | The shadow's colour |
+| `pixelCorners` | `false` | `true` steps each corner in by one border width, pixel-art style |
+| `base` | — | A skin to build on: another skin's name, or `omarchy` |
+
+A colour written `@name` means the same colour as another key, so a skin built on
+Omarchy can rearrange the theme's colours without fixing them: `"line": "@textDim"`
+draws borders in the theme's dim text colour, whatever the theme.
 
 ```json
 { "background": "#1e1e2e", "surface": "#313244", "accent": "#f5c2e7", "radius": 32 }
 ```
 
 The skin `"omarchy"` takes its colours from your current Omarchy theme, and changes when
-you switch theme.
+you switch theme. So does any skin with `"base": "omarchy"`, such as `pixel`:
+
+```json
+{ "base": "omarchy", "font": "DepartureMono Nerd Font", "line": "@textDim",
+  "radius": 0, "borderWidth": 6, "shadow": 6, "pixelCorners": true }
+```
 
 ## Home Assistant
 
