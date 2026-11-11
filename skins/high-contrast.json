@@ -1,0 +1,13 @@
+{
+  "background": "#000000",
+  "surface": "#000000",
+  "surfacePressed": "#333333",
+  "line": "#ffffff",
+  "text": "#ffffff",
+  "textDim": "#d0d0d0",
+  "accent": "#ffd400",
+  "danger": "#ff4040",
+  "radius": 8,
+  "labelSize": 36,
+  "detailSize": 30
+}

@@ -1,0 +1,10 @@
+{
+  "background": "#f4f1ea",
+  "surface": "#e6e1d6",
+  "surfacePressed": "#d4cdbf",
+  "line": "#bfb7a8",
+  "text": "#1f1d1a",
+  "textDim": "#6b655c",
+  "accent": "#2f6fdf",
+  "danger": "#c23b3b"
+}

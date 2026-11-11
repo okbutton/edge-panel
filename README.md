@@ -103,6 +103,7 @@ The panel compensates for any scale, so one layout pixel is always one screen pi
 | `buttonColumns` | `6` | Columns of buttons on fixed pages. Live pages, such as herdr's, fill the page |
 | `buttonRows` | `3` | Rows of buttons on fixed pages. A page shows at most columns × rows buttons |
 | `screen` | `""` | A monitor name such as `DP-1`. Leave empty to find the Edge |
+| `skin` | `"matte-black"` | The panel's look: a file in `skins/`, or `"omarchy"` (see Skins) |
 
 The `EDGE_SCREEN` environment variable overrides `screen`, which is handy for trying the
 panel on an ordinary monitor:
@@ -114,6 +115,37 @@ EDGE_SCREEN=DP-1 qs -p ~/edge-panel
 There, the panel runs along the bottom of that monitor at the Edge's pixel size. It looks
 larger than on the Edge, because the Edge has a higher pixel density (about 184 pixels
 per inch, against 109 for a 27" 1440p monitor).
+
+
+### Skins
+
+A skin is a JSON file in `skins/`, named in `config.json` without its `.json`. Switching
+skins, or editing the one in use, changes the panel at once. Three come with it:
+`matte-black` (the default), `paper` (light) and `high-contrast`.
+
+A skin sets any of these keys, and keys it leaves out keep Matte Black's value:
+
+| Key | Default | Used for |
+|---|---|---|
+| `background` | `#090909` | Behind everything |
+| `surface` | `#161616` | Buttons and cards |
+| `surfacePressed` | `#2a2a2a` | A button while it's held |
+| `line` | `#333333` | Button and card borders |
+| `text` | `#eaeaea` | Labels and values |
+| `textDim` | `#8a8a8d` | Secondary text, idle icons |
+| `accent` | `#e68e0d` | Active buttons, the current tab, graphs |
+| `danger` | `#D35F5F` | Buttons that need a second tap |
+| `font` | `JetBrainsMono Nerd Font` | All text. Use a Nerd Font, which has the icons |
+| `radius` | `20` | Corner rounding, in Edge pixels |
+| `gap` | `16` | Space between buttons |
+| `labelSize`, `detailSize`, `iconSize` | `32`, `26`, `72` | Text and icon sizes |
+
+```json
+{ "background": "#1e1e2e", "surface": "#313244", "accent": "#f5c2e7", "radius": 32 }
+```
+
+The skin `"omarchy"` takes its colours from your current Omarchy theme, and changes when
+you switch theme.
 
 ## Home Assistant
 

@@ -54,6 +54,7 @@ PanelWindow {
       property int buttonColumns: 6
       property int buttonRows: 3
       property string screen: ""
+      property string skin: "matte-black" // read by Theme.qml
     }
   }
 
