@@ -118,26 +118,18 @@
           "icon": "\uf0db",
           "label": "Split right",
           "run": [
-            "herdr",
-            "pane",
-            "split",
-            "--current",
-            "--direction",
-            "right",
-            "--focus"
+            "sh",
+            "-c",
+            "herdr pane split \"$(herdr pane current | jq -r .result.pane.pane_id)\" --direction right --focus"
           ]
         },
         {
           "icon": "\uf0c9",
           "label": "Split down",
           "run": [
-            "herdr",
-            "pane",
-            "split",
-            "--current",
-            "--direction",
-            "down",
-            "--focus"
+            "sh",
+            "-c",
+            "herdr pane split \"$(herdr pane current | jq -r .result.pane.pane_id)\" --direction down --focus"
           ]
         },
         {
